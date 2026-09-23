@@ -22,13 +22,13 @@ Lights1 cr_j355_Water_lights = gdSPDefLights1(
 	0x40, 0x45, 0xBF,
 	0x3F, 0x98, 0xFF, 0x28, 0x28, 0x28);
 
-Lights1 cr_j355_Yellow_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x28, 0x28, 0x28);
+Lights1 cr_j355_Yellow__SHOES__lights = gdSPDefLights1(
+	0x7F, 0x5E, 0x0,
+	0xFF, 0xC0, 0x0, 0x28, 0x28, 0x28);
 
-Lights1 cr_j355_Blue_lights = gdSPDefLights1(
-	0x0, 0x2A, 0x7F,
-	0x0, 0x5D, 0xFF, 0x28, 0x28, 0x28);
+Lights1 cr_j355_Blue__EMBLEM__lights = gdSPDefLights1(
+	0x0, 0x0, 0x7F,
+	0x0, 0x0, 0xFF, 0x28, 0x28, 0x28);
 
 Lights1 cr_j355_Handle_lights = gdSPDefLights1(
 	0x2E, 0xF, 0x0,
@@ -38,7 +38,7 @@ Lights1 cr_j355_Glass_lights = gdSPDefLights1(
 	0x4C, 0x72, 0x7F,
 	0x9E, 0xE6, 0xFF, 0x28, 0x28, 0x28);
 
-Lights1 cr_j355_Fast3D_Material_lights = gdSPDefLights1(
+Lights1 cr_j355_Nozzle_Bottom__SKIN__lights = gdSPDefLights1(
 	0x5C, 0x5C, 0x5C,
 	0xBC, 0xBC, 0xBC, 0x28, 0x28, 0x28);
 
@@ -114,9 +114,9 @@ u8 cr_j355_robo_jess_dials_rgba16[] = {
 	#include "actors/cr_j355/robo_jess_dials.rgba16.inc.c"
 };
 
-Gfx cr_j355_screw_rgba16_aligner[] = {gsSPEndDisplayList()};
-u8 cr_j355_screw_rgba16[] = {
-	#include "actors/cr_j355/screw.rgba16.inc.c"
+Gfx cr_j355_j355_screw_ia8_aligner[] = {gsSPEndDisplayList()};
+u8 cr_j355_j355_screw_ia8[] = {
+	#include "actors/cr_j355/j355_screw.ia8.inc.c"
 };
 
 Gfx cr_j355_j355_fludd_bottom_rgba16_aligner[] = {gsSPEndDisplayList()};
@@ -6111,21 +6111,21 @@ Gfx mat_cr_j355_Water[] = {
 	gsSPEndDisplayList(),
 };
 
-Gfx mat_cr_j355_Yellow[] = {
-	gsSPSetLights1(cr_j355_Yellow_lights),
+Gfx mat_cr_j355_Yellow__SHOES_[] = {
+	gsSPCopyLightsPlayerPart(SHOES),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
+	gsDPSetCombineLERP(TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT, TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, cr_j355_screw_rgba16),
-	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 255, 512),
-	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 4, 0, G_TX_CLAMP | G_TX_NOMIRROR, 4, 0),
+	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, cr_j355_j355_screw_ia8),
+	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 127, 1024),
+	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b, 2, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 4, 0, G_TX_CLAMP | G_TX_NOMIRROR, 4, 0),
 	gsDPSetTileSize(0, 0, 0, 60, 60),
 	gsSPEndDisplayList(),
 };
 
-Gfx mat_cr_j355_Blue[] = {
-	gsSPSetLights1(cr_j355_Blue_lights),
+Gfx mat_cr_j355_Blue__EMBLEM_[] = {
+	gsSPCopyLightsPlayerPart(EMBLEM),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPTexture(65535, 65535, 0, 0, 1),
@@ -6156,7 +6156,7 @@ Gfx mat_revert_cr_j355_Glass[] = {
 	gsSPEndDisplayList(),
 };
 
-Gfx mat_cr_j355_Fast3D_Material[] = {
+Gfx mat_cr_j355_Nozzle_Bottom__SKIN_[] = {
 	gsSPCopyLightsPlayerPart(SKIN),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0),
@@ -6492,9 +6492,9 @@ Gfx cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_1[] = {
 	gsSPDisplayList(mat_revert_cr_j355_Skin__SKIN_),
 	gsSPDisplayList(mat_cr_j355_Water),
 	gsSPDisplayList(cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_1_tri_1),
-	gsSPDisplayList(mat_cr_j355_Yellow),
+	gsSPDisplayList(mat_cr_j355_Yellow__SHOES_),
 	gsSPDisplayList(cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_1_tri_2),
-	gsSPDisplayList(mat_cr_j355_Blue),
+	gsSPDisplayList(mat_cr_j355_Blue__EMBLEM_),
 	gsSPDisplayList(cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_1_tri_3),
 	gsSPDisplayList(mat_cr_j355_Handle),
 	gsSPDisplayList(cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_1_tri_4),
@@ -6509,7 +6509,7 @@ Gfx cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_5[] = {
 };
 
 Gfx cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_4[] = {
-	gsSPDisplayList(mat_cr_j355_Fast3D_Material),
+	gsSPDisplayList(mat_cr_j355_Nozzle_Bottom__SKIN_),
 	gsSPDisplayList(cr_j355_Fludd_Switch_Option_Fludd_DL_mesh_layer_4_tri_0),
 	gsSPEndDisplayList(),
 };

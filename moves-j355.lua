@@ -8,6 +8,7 @@ local ACT_FLUDD_HOVER = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR 
 local ACT_SPRINGFLIP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_GALAXY_SPIN = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ATTACKING)
 local ACT_SPINJUMP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
+local ACT_FLUDD_BOOST = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 
 local maxWater = 3000
 local maxHover = 75
@@ -19,7 +20,7 @@ local burstCost = maxWater/50
 gJ355States = {}
 for i = 0, MAX_PLAYERS - 1 do
     gJ355States[i] = {
-        water = maxWater,
+        water = 0,
         hover = 0,
         prevVel = 0,
         prevPosY = 0,
@@ -44,6 +45,7 @@ end
 local SOUND_FLUDD_PICKUP    = audio_sample_load("cr_sound_wett_pickup.ogg")
 local SOUND_FLUDD_HOVER     = audio_sample_load("cr_sound_wett_hover.ogg")
 local SOUND_FLUDD_HOVER_END = audio_sample_load("cr_sound_wett_hover_end.ogg")
+local SOUND_FLUDD_CHARGE    = audio_sample_load("cr_sound_wett_charge.ogg")
 local SOUND_FLUDD_LOOP      = audio_stream_load("cr_sound_wett_loop.ogg")
 
 local TEX_CR_J355_TANK = get_texture_info("cr_hud_j355_tank")
@@ -79,6 +81,15 @@ local spinActions = {
     [ACT_LONG_JUMP]     = true,
     [ACT_BACKFLIP]      = true,
     [ACT_SKATE_JUMP]    = true,
+}
+local walkingActions = {
+    [ACT_IDLE]                  = true,
+    [ACT_WALKING]               = true,
+    [ACT_DECELERATING]          = true,
+    [ACT_BRAKING]               = true,
+    [ACT_BRAKING_STOP]          = true,
+    [ACT_TURNING_AROUND]        = true,
+    [ACT_FINISH_TURNING_AROUND] = true,
 }
 
 local function pause_check()
@@ -456,34 +467,27 @@ end
 hook_mario_action(ACT_SPRINGFLIP, act_springflip)
 
 local function act_galaxy_spin(m)
-    local anim = m.actionArg == 0 and MARIO_ANIM_RUNNING_UNUSED or MARIO_ANIM_DOUBLE_JUMP_FALL
 
     if m.actionState == 0 then
         play_character_sound(m, CHAR_SOUND_SPIN)
         m.vel.y = 30
         m.actionState = 1
     end
-    local stepResult = common_air_action_step(m, ACT_FREEFALL_LAND, anim, AIR_STEP_CHECK_LEDGE_GRAB)
+    local stepResult = common_air_action_step(m, ACT_FREEFALL_LAND, MARIO_ANIM_RUNNING_UNUSED, AIR_STEP_CHECK_LEDGE_GRAB)
     if stepResult == AIR_STEP_GRABBED_LEDGE then
         m.marioObj.header.gfx.animInfo.animID = -1
     end
-    if m.actionArg == 0 then
-        smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_galaxy_spin")
-        m.vel.y = m.vel.y + 1
+    smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_galaxy_spin")
+    m.vel.y = m.vel.y + 1
 
-        if m.forwardVel > 25 then
-            m.forwardVel = m.forwardVel * 0.8
-        end
-        if m.actionState == 1 and m.actionTimer < 10 then
-            set_mario_particle_flags(m, PARTICLE_SPARKLES, 0)
-        end
-    elseif m.actionArg == 1 then
-        if m.input & INPUT_B_PRESSED ~= 0 then
-            set_mario_action(m, ACT_DIVE, 0)
-        end
+    if m.forwardVel > 25 then
+        m.forwardVel = m.forwardVel * 0.8
+    end
+    if m.actionState == 1 and m.actionTimer < 10 then
+        set_mario_particle_flags(m, PARTICLE_SPARKLES, 0)
     end
 
-    if (m.input & INPUT_Z_PRESSED) ~= 0 then
+    if m.input & INPUT_Z_PRESSED ~= 0 then
         return set_mario_action(m, ACT_GROUND_POUND, 0)
     end
 
@@ -536,6 +540,45 @@ local function act_spinjump(m)
 end
 hook_mario_action(ACT_SPINJUMP, act_spinjump)
 
+local function act_fludd_boost(m)
+
+    if m.actionState == 0 then
+        if m.actionArg == 0 then
+            play_sound(SOUND_OBJ_CANNON4, m.marioObj.header.gfx.cameraToObject)
+            play_character_sound(m, CHAR_SOUND_YAHOO_WAHA_YIPPEE)
+            m.vel.y = 120
+        elseif m.actionArg == 1 then
+            play_character_sound(m, CHAR_SOUND_YAH_WAH_HOO)
+            m.vel.y = 50
+        end
+        audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
+        set_mario_particle_flags(m, PARTICLE_SNOW | PARTICLE_MIST_CIRCLE, 0)
+        m.actionState = 1
+    end
+    local stepResult = common_air_action_step(m, ACT_FREEFALL_LAND, MARIO_ANIM_DOUBLE_JUMP_FALL, AIR_STEP_CHECK_LEDGE_GRAB)
+
+    if m.actionArg == 0 then
+        if m.vel.y > 60 then
+            set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
+        end
+        m.peakHeight = m.pos.y
+    end
+    if m.actionArg == 1 or m.vel.y < 30 then
+        if m.input & INPUT_B_PRESSED ~= 0 then
+            set_mario_action(m, ACT_DIVE, 0)
+        end
+    end
+
+    if m.input & INPUT_Z_PRESSED ~= 0 then
+        return set_mario_action(m, ACT_GROUND_POUND, 0)
+    end
+
+    m.actionTimer = m.actionTimer + 1
+    return 0
+end
+hook_mario_action(ACT_FLUDD_BOOST, act_fludd_boost)
+
+
 
 ----------
 -- J355 --
@@ -548,10 +591,10 @@ local function j355_set_action(m)
     if m.action == ACT_BACKFLIP then
         m.vel.y = m.vel.y + 7
     end
-    -- better water recovery
-    if m.action == ACT_WATER_JUMP then
-        m.vel.y = m.vel.y + 10
-    end
+    ---- better water recovery
+    --if m.action == ACT_WATER_JUMP then
+    --    m.vel.y = m.vel.y + 10
+    --end
     -- reset fludd sound
     if m.action ~= ACT_FLUDD_HOVER then
         audio_sample_stop(SOUND_FLUDD_HOVER)
@@ -683,17 +726,9 @@ local function j355_update(m)
         end
     end
     -- GP jump
-    if m.action == ACT_GROUND_POUND_LAND and (m.input & INPUT_A_PRESSED) ~= 0 then
-        if e.water >= rocketJumpCost and m.controller.buttonDown & L_TRIG ~= 0 then
-            set_mario_action(m, ACT_DOUBLE_JUMP, 1)
-            m.vel.y = 120
-            play_sound(SOUND_OBJ_CANNON4, m.marioObj.header.gfx.cameraToObject)
-            audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
-            e.water = e.water - rocketJumpCost
-        else
-            set_mario_action(m, ACT_JUMP, 1)
-            m.vel.y = m.vel.y + 20
-        end
+    if m.action == ACT_GROUND_POUND_LAND and m.input & INPUT_A_PRESSED ~= 0 then
+        set_mario_action(m, ACT_JUMP, 1)
+        m.vel.y = m.vel.y + 20
     end
     if e.water > 0 and m.action == ACT_DOUBLE_JUMP and m.vel.y > 30 and m.actionArg == 1 then
         set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
@@ -724,11 +759,8 @@ local function j355_update(m)
     e.water = math.clamp(e.water, 0, maxWater)
     e.hover = math.clamp(e.hover, 0, maxHover)
     if e.water > 0 then
-        local canFludd = fluddActions[m.action] and m.vel.y < 10
+        local canFludd = fluddActions[m.action] and m.vel.y < 15
 
-        if m.pos.y == m.floorHeight and e.hover < maxHover then
-            e.hover = maxHover
-        end
         if canFludd and m.controller.buttonPressed & L_TRIG ~= 0 and e.hover > 0 then
             set_mario_action(m, ACT_FLUDD_HOVER, 0)
         end
@@ -736,21 +768,37 @@ local function j355_update(m)
             m.actionArg = 1
         end
 
-        if m.pos.y < m.waterLevel then
-            e.water = e.water + 15
+        if m.pos.y < m.waterLevel and e.water < maxWater then
+            if e.water > (maxWater - 15) then
+                e.water = maxWater
+            else
+                e.water = e.water + 15
+            end
         end
 
         if m.action == ACT_GALAXY_SPIN and m.controller.buttonPressed & L_TRIG ~= 0 and e.hover == maxHover and e.water >= burstCost then
             e.hover = 0
             e.water = e.water - burstCost
-            --set_mario_action(m, ACT_SIDE_FLIP, 1)
-            audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
-            play_character_sound(m, CHAR_SOUND_YAH_WAH_HOO)
-            set_anim_to_frame(m, 0)
-            m.actionTimer = 10
-            m.actionArg = 1
-            m.vel.y = 50
-            set_mario_particle_flags(m, PARTICLE_SNOW | PARTICLE_MIST_CIRCLE, 0)
+            set_mario_action(m, ACT_FLUDD_BOOST, 1)
+        end
+
+        if walkingActions[m.action] and e.water > rocketJumpCost and m.controller.buttonDown & L_TRIG ~= 0 then
+            if e.hover > 0 then
+                e.hover = e.hover - 2
+            else
+                set_mario_action(m, ACT_FLUDD_BOOST, 0)
+                e.water = e.water - rocketJumpCost
+            end
+            if e.hover == maxHover - 2 then
+                audio_sample_play(SOUND_FLUDD_CHARGE, m.pos, pause_check())
+            end
+        else
+            if m.pos.y == m.floorHeight then
+                e.hover = maxHover
+            end
+            if m.controller.buttonReleased & L_TRIG ~= 0 or not walkingActions[m.action] then
+                audio_sample_stop(SOUND_FLUDD_CHARGE)
+            end
         end
     else
         e.hover = 0
@@ -763,7 +811,9 @@ local function j355_update(m)
                 m.slideVelX = m.vel.x * 1.1
             end
             set_mario_particle_flags(m, PARTICLE_SNOW, 0)
-            e.water = e.water - 2
+            if m.pos.y > m.waterLevel then
+                e.water = e.water - 2
+            end
             audio_stream_play(SOUND_FLUDD_LOOP, false, 0.8 * pause_check())
             if m.controller.buttonReleased & L_TRIG ~= 0 then
                 m.actionArg = 0
@@ -810,6 +860,7 @@ local function j355_sound(sound, pos)
         audio_sample_play(SOUND_FLUDD_PICKUP, m.pos, pause_check())
         set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
         e.water = maxWater
+        e.hover = maxHover
     end
 end
 

@@ -114,7 +114,7 @@ local function act_davy_dash(m)
         m.particleFlags = m.particleFlags | PARTICLE_VERTICAL_STAR
         m.actionState = 1
         e.canDash = false
-        e.flyingSpeed = speed
+        e.flySpeed = speed
     end
 
     if m.actionTimer > durr then
@@ -378,7 +378,7 @@ function davy_update(m)
             z1,
             nil
         )
-        local maxSpeed = m.flags & MARIO_METAL_CAP ~= 0 and 45 or 30
+        local maxSpeed = (m.flags & MARIO_METAL_CAP ~= 0) and 45 or 30
         if e.flySpeed < maxSpeed then
             e.flySpeed = maxSpeed
         else
@@ -387,22 +387,22 @@ function davy_update(m)
 
         if m.input & INPUT_B_PRESSED ~= 0 and e.flyBoostCooldown == 0 then
             play_character_sound(m, CHAR_SOUND_YAHOO_WAHA_YIPPEE)
-            e.gfxY = -0x10000
+            e.gfxZ = -0x10000
             e.flySpeed = maxSpeed + 25
             e.flyBoostCooldown = flyBoostCooldownMax
         end
 
         e.flyBoostCooldown = math.clamp(e.flyBoostCooldown - 1, 0, flyBoostCooldownMax)
-        e.gfxY = math.lerp(e.gfxY, 0, 0.1)
-        m.marioObj.header.gfx.angle.z = m.marioObj.header.gfx.angle.z + e.gfxY
-        m.forwardVel = e.flyingSpeed
+        e.gfxZ = math.lerp(e.gfxZ, 0, 0.1)
+        m.marioObj.header.gfx.angle.z = m.marioObj.header.gfx.angle.z + e.gfxZ
+        m.forwardVel = e.flySpeed
     end
 
     if m.flags & MARIO_METAL_CAP ~= 0 then
         if m.pos.y > m.waterLevel then
             local range = 80
             local rangex = m.pos.x + math.random(0 - range, range)
-            local rangey = m.pos.y + math.random(0, range*2)
+            local rangey = m.pos.y + math.random(0, range)
             local rangez = m.pos.z + math.random(0 - range, range)
             if m.playerIndex == 0 then
                 spawn_non_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, rangex, rangey, rangez, function(o)

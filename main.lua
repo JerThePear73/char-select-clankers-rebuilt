@@ -34,94 +34,94 @@ local SOUND_MENU_THEME_CR_DAVY = audio_stream_load('cr_davy_menu_theme.ogg')
 CHAR_SOUND_SPIN = CHAR_SOUND_MAX + 1
 
 VOICETABLE_CR_DAVY = { -- Voices from Skeleton character from Lego Racers (1999)
-    [CHAR_SOUND_ATTACKED] = {'davy_ouch.ogg', 'davy_ahh.ogg'},
+    [CHAR_SOUND_ATTACKED] = {'cr_davy_ouch.ogg', 'cr_davy_ahh.ogg'},
     [CHAR_SOUND_COUGHING1] = nil,
     [CHAR_SOUND_COUGHING2] = nil,
     [CHAR_SOUND_COUGHING3] = nil,
-    [CHAR_SOUND_DOH] = 'davy_ouch.ogg', -- long jump bump
+    [CHAR_SOUND_DOH] = 'cr_davy_ouch.ogg', -- long jump bump
     [CHAR_SOUND_DROWNING] = nil,
-    [CHAR_SOUND_DYING] = 'davy_ohno.ogg',
+    [CHAR_SOUND_DYING] = 'cr_davy_ohno.ogg',
     [CHAR_SOUND_EEUH] = nil, -- climbing ledge
-    [CHAR_SOUND_GROUND_POUND_WAH] = 'davy_huehue.ogg',
-    [CHAR_SOUND_HAHA] = 'davy_tada.ogg',
-    [CHAR_SOUND_HAHA_2] = 'davy_tada.ogg',
-    [CHAR_SOUND_HERE_WE_GO] = 'davy_laugh.ogg', -- getting star/power up
-    [CHAR_SOUND_HOOHOO] = {'davy_huehue.ogg', 'davy_wohee.ogg'},
+    [CHAR_SOUND_GROUND_POUND_WAH] = 'cr_davy_huehue.ogg',
+    [CHAR_SOUND_HAHA] = 'cr_davy_tada.ogg',
+    [CHAR_SOUND_HAHA_2] = 'cr_davy_tada.ogg',
+    [CHAR_SOUND_HERE_WE_GO] = 'cr_davy_laugh.ogg', -- getting star/power up
+    [CHAR_SOUND_HOOHOO] = {'cr_davy_huehue.ogg', 'cr_davy_wohee.ogg'},
     [CHAR_SOUND_HRMM] = nil, -- lifting
     [CHAR_SOUND_IMA_TIRED] = nil,
-    [CHAR_SOUND_MAMA_MIA] = 'davy_ohno.ogg',
-    [CHAR_SOUND_LETS_A_GO] = 'davy_heehee.ogg', -- starting level
-    [CHAR_SOUND_ON_FIRE] = {'davy_ahoey.ogg', 'davy_yeow.ogg'},
-    [CHAR_SOUND_OOOF] = 'davy_ouch.ogg',
-    [CHAR_SOUND_OOOF2] = 'davy_ouch.ogg', -- thrown out of painting
+    [CHAR_SOUND_MAMA_MIA] = 'cr_davy_ohno.ogg',
+    [CHAR_SOUND_LETS_A_GO] = 'cr_davy_heehee.ogg', -- starting level
+    [CHAR_SOUND_ON_FIRE] = {'cr_davy_ahoey.ogg', 'cr_davy_yeow.ogg'},
+    [CHAR_SOUND_OOOF] = 'cr_davy_ouch.ogg',
+    [CHAR_SOUND_OOOF2] = 'cr_davy_ouch.ogg', -- thrown out of painting
     [CHAR_SOUND_PANTING] = nil,
     [CHAR_SOUND_PANTING_COLD] = nil,
-    [CHAR_SOUND_PUNCH_HOO] = 'davy_wohee.ogg', -- kick
-    [CHAR_SOUND_PUNCH_WAH] = 'davy_huehue.ogg', -- punch 2
-    [CHAR_SOUND_PUNCH_YAH] = 'davy_ya.ogg', -- punch 1
-    [CHAR_SOUND_SO_LONGA_BOWSER] = {'davy_laugh.ogg', 'davy_hohoyeahah.ogg'},
-    [CHAR_SOUND_SNORING1] = 'jer_snore1.ogg',
-    [CHAR_SOUND_SNORING2] = 'jer_snore2.ogg',
+    [CHAR_SOUND_PUNCH_HOO] = 'cr_davy_wohee.ogg', -- kick
+    [CHAR_SOUND_PUNCH_WAH] = 'cr_davy_huehue.ogg', -- punch 2
+    [CHAR_SOUND_PUNCH_YAH] = 'cr_davy_ya.ogg', -- punch 1
+    [CHAR_SOUND_SO_LONGA_BOWSER] = {'cr_davy_laugh.ogg', 'cr_davy_hohoyeahah.ogg'},
+    [CHAR_SOUND_SNORING1] = 'r_davy_snore1.ogg',
+    [CHAR_SOUND_SNORING2] = 'r_davy_snore2.ogg',
     [CHAR_SOUND_SNORING3] = nil,
-    [CHAR_SOUND_TWIRL_BOUNCE] = 'davy_hohoyeahah.ogg',
-    [CHAR_SOUND_UH] = 'davy_ouch.ogg', -- wall bonk
+    [CHAR_SOUND_TWIRL_BOUNCE] = 'cr_davy_hohoyeahah.ogg',
+    [CHAR_SOUND_UH] = 'cr_davy_ouch.ogg', -- wall bonk
     [CHAR_SOUND_UH2] = nil, -- landing long jump
     [CHAR_SOUND_UH2_2] = nil, -- same as uh2 maybe??
-    [CHAR_SOUND_WAAAOOOW] = 'davy_ahoey.ogg',
-    [CHAR_SOUND_WAH2] = 'davy_haha.ogg', -- throw
-    [CHAR_SOUND_WHOA] = 'davy_ahoey.ogg',
-    [CHAR_SOUND_YAHOO] = {'davy_heehee.ogg', 'davy_yeawohee.ogg'},
+    [CHAR_SOUND_WAAAOOOW] = 'cr_davy_ahoey.ogg',
+    [CHAR_SOUND_WAH2] = 'cr_davy_haha.ogg', -- throw
+    [CHAR_SOUND_WHOA] = 'cr_davy_ahoey.ogg',
+    [CHAR_SOUND_YAHOO] = {'cr_davy_heehee.ogg', 'cr_davy_yeawohee.ogg'},
     [CHAR_SOUND_YAWNING] = nil,
-    [CHAR_SOUND_YAHOO_WAHA_YIPPEE] = {'davy_yeawohee.ogg', 'davy_hohoyeahah.ogg'},
-    [CHAR_SOUND_YAH_WAH_HOO] = {'davy_haha.ogg', 'davy_ya.ogg'},
+    [CHAR_SOUND_YAHOO_WAHA_YIPPEE] = {'cr_davy_yeawohee.ogg', 'cr_davy_hohoyeahah.ogg'},
+    [CHAR_SOUND_YAH_WAH_HOO] = {'cr_davy_haha.ogg', 'cr_davy_ya.ogg'},
     [CHAR_SOUND_HELLO] = nil,
     [CHAR_SOUND_PRESS_START_TO_PLAY] = nil,
-    [CHAR_SOUND_OKEY_DOKEY] = 'davy_hohoyeahah.ogg',
+    [CHAR_SOUND_OKEY_DOKEY] = 'cr_davy_hohoyeahah.ogg',
 }
 VOICETABLE_CR_J355 = { -- Voices from Veronica Voltage and other female characters from Lego Racers (1999)
-    [CHAR_SOUND_ATTACKED] = 'robo_jess_ow.ogg',
+    [CHAR_SOUND_ATTACKED] = 'cr_robo_jess_ow.ogg',
     [CHAR_SOUND_COUGHING1] = nil,
     [CHAR_SOUND_COUGHING2] = nil,
     [CHAR_SOUND_COUGHING3] = nil,
-    [CHAR_SOUND_DOH] = 'robo_jess_ow.ogg',
+    [CHAR_SOUND_DOH] = 'cr_robo_jess_ow.ogg',
     [CHAR_SOUND_DROWNING] = nil,
-    [CHAR_SOUND_DYING] = 'robo_jess_ohno.ogg',
-    [CHAR_SOUND_EEUH] = 'robo_jess_heh.ogg',
-    [CHAR_SOUND_GROUND_POUND_WAH] = 'robo_jess_hiya.ogg',
-    [CHAR_SOUND_HAHA] = 'robo_jess_yeah_jazzy.ogg',
-    [CHAR_SOUND_HAHA_2] = 'robo_jess_oh_yeah.ogg',
-    [CHAR_SOUND_HERE_WE_GO] = 'robo_jess_yeah_jazzy.ogg',
-    [CHAR_SOUND_HOOHOO] = 'robo_jess_woo.ogg',
-    [CHAR_SOUND_HRMM] = 'robo_jess_heh.ogg',
+    [CHAR_SOUND_DYING] = 'cr_robo_jess_ohno.ogg',
+    [CHAR_SOUND_EEUH] = 'cr_robo_jess_heh.ogg',
+    [CHAR_SOUND_GROUND_POUND_WAH] = 'cr_robo_jess_hiya.ogg',
+    [CHAR_SOUND_HAHA] = 'cr_robo_jess_yeah_jazzy.ogg',
+    [CHAR_SOUND_HAHA_2] = 'cr_robo_jess_oh_yeah.ogg',
+    [CHAR_SOUND_HERE_WE_GO] = 'cr_robo_jess_yeah_jazzy.ogg',
+    [CHAR_SOUND_HOOHOO] = 'cr_robo_jess_woo.ogg',
+    [CHAR_SOUND_HRMM] = 'cr_robo_jess_heh.ogg',
     [CHAR_SOUND_IMA_TIRED] = nil,
-    [CHAR_SOUND_MAMA_MIA] = 'robo_jess_ohno.ogg',
-    [CHAR_SOUND_LETS_A_GO] = 'robo_jess_oh_yeah.ogg',
-    [CHAR_SOUND_ON_FIRE] = 'robo_jess_ohno.ogg',
-    [CHAR_SOUND_OOOF] = 'robo_jess_ouch.ogg',
-    [CHAR_SOUND_OOOF2] = 'robo_jess_ouch.ogg',
+    [CHAR_SOUND_MAMA_MIA] = 'cr_robo_jess_ohno.ogg',
+    [CHAR_SOUND_LETS_A_GO] = 'cr_robo_jess_oh_yeah.ogg',
+    [CHAR_SOUND_ON_FIRE] = 'cr_robo_jess_ohno.ogg',
+    [CHAR_SOUND_OOOF] = 'cr_robo_jess_ouch.ogg',
+    [CHAR_SOUND_OOOF2] = 'cr_robo_jess_ouch.ogg',
     [CHAR_SOUND_PANTING] = nil,
     [CHAR_SOUND_PANTING_COLD] = nil,
-    [CHAR_SOUND_PUNCH_HOO] = 'robo_jess_yeah.ogg',
-    [CHAR_SOUND_PUNCH_WAH] = 'robo_jess_ya.ogg',
-    [CHAR_SOUND_PUNCH_YAH] = 'robo_jess_ha.ogg',
-    [CHAR_SOUND_SO_LONGA_BOWSER] = 'robo_jess_hiya.ogg',
+    [CHAR_SOUND_PUNCH_HOO] = 'cr_robo_jess_yeah.ogg',
+    [CHAR_SOUND_PUNCH_WAH] = 'cr_robo_jess_ya.ogg',
+    [CHAR_SOUND_PUNCH_YAH] = 'cr_robo_jess_ha.ogg',
+    [CHAR_SOUND_SO_LONGA_BOWSER] = 'cr_robo_jess_hiya.ogg',
     [CHAR_SOUND_SNORING1] = nil,
     [CHAR_SOUND_SNORING2] = nil,
     [CHAR_SOUND_SNORING3] = nil,
-    [CHAR_SOUND_TWIRL_BOUNCE] = 'robo_jess_yahoo.ogg',
-    [CHAR_SOUND_UH] = 'robo_jess_ow.ogg',
-    [CHAR_SOUND_UH2] = 'robo_jess_heh.ogg',
+    [CHAR_SOUND_TWIRL_BOUNCE] = 'cr_robo_jess_yahoo.ogg',
+    [CHAR_SOUND_UH] = 'cr_robo_jess_ow.ogg',
+    [CHAR_SOUND_UH2] = 'cr_robo_jess_heh.ogg',
     [CHAR_SOUND_UH2_2] = nil,
-    [CHAR_SOUND_WAAAOOOW] = 'robo_jess_ohno.ogg',
-    [CHAR_SOUND_WAH2] = 'robo_jess_ya.ogg',
-    [CHAR_SOUND_WHOA] = 'robo_jess_uh_oh.ogg',
-    [CHAR_SOUND_YAHOO] = { 'robo_jess_yahoo.ogg', 'robo_jess_woohoo.ogg' },
+    [CHAR_SOUND_WAAAOOOW] = 'cr_robo_jess_ohno.ogg',
+    [CHAR_SOUND_WAH2] = 'cr_robo_jess_ya.ogg',
+    [CHAR_SOUND_WHOA] = 'cr_robo_jess_uh_oh.ogg',
+    [CHAR_SOUND_YAHOO] = { 'cr_robo_jess_yahoo.ogg', 'cr_robo_jess_woohoo.ogg' },
     [CHAR_SOUND_YAWNING] = nil,
-    [CHAR_SOUND_YAHOO_WAHA_YIPPEE] = {'robo_jess_yahoo.ogg', 'robo_jess_woohoo.ogg' },
-    [CHAR_SOUND_YAH_WAH_HOO] = {'robo_jess_ha.ogg', 'robo_jess_ya.ogg', 'robo_jess_yeah.ogg' },
-    [CHAR_SOUND_OKEY_DOKEY] = 'robo_jess_oh_yeah.ogg',
+    [CHAR_SOUND_YAHOO_WAHA_YIPPEE] = {'cr_robo_jess_yahoo.ogg', 'cr_robo_jess_woohoo.ogg' },
+    [CHAR_SOUND_YAH_WAH_HOO] = {'cr_robo_jess_ha.ogg', 'cr_robo_jess_ya.ogg', 'cr_robo_jess_yeah.ogg' },
+    [CHAR_SOUND_OKEY_DOKEY] = 'cr_robo_jess_oh_yeah.ogg',
     --CHAR_SOUND_MAX
-    [CHAR_SOUND_SPIN] = 'robo_jess_spin.ogg',
+    [CHAR_SOUND_SPIN] = 'cr_robo_jess_spin.ogg',
 }
 
 local PALETTES_CR_DAVY = {
@@ -246,28 +246,28 @@ local PALETTES_CR_J355 = {
         [HAIR]   = "888888",
         [SKIN]   = "ffffff",
         [CAP]    = "ff8900",
-        [EMBLEM] = "000000",
+        [EMBLEM] = "222222",
     },
     {
-        name = "Familiar Face",
-        [PANTS]  = "3e6c40",
-        [SHIRT]  = "243456",
+        name = "Old Times' Sake",
+        [PANTS]  = "8cc6ff",
+        [SHIRT]  = "563421",
         [GLOVES] = "8cc6ff",
         [SHOES]  = "99d149",
         [HAIR]   = "6a808d",
         [SKIN]   = "93a9b1",
         [CAP]    = "8cc6ff",
-        [EMBLEM] = "99d149",
+        [EMBLEM] = "8cc6ff",
     },
     {
         name = "Touch of Midas",
-        [PANTS]  = "ffffff",
-        [SHIRT]  = "760000",
-        [GLOVES] = "760000",
+        [PANTS]  = "ffd176",
+        [SHIRT]  = "770000",
+        [GLOVES] = "770000",
         [SHOES]  = "ffd176",
         [HAIR]   = "ffb400",
         [SKIN]   = "ffb400",
-        [CAP]    = "760000",
+        [CAP]    = "770000",
         [EMBLEM] = "af7d00",
     },
 }
@@ -312,16 +312,21 @@ local ANIMTABLE_CR_DAVY = {
     [CHAR_ANIM_PLACE_LIGHT_OBJ]                         = "cr_anim_davy_hold_place",
     [CHAR_ANIM_STAND_UP_FROM_SLIDING_WITH_LIGHT_OBJ]    = "cr_anim_davy_hold_getup",
     [CHAR_ANIM_STOP_SLIDE_LIGHT_OBJ]                    = "cr_anim_davy_hold_getup2",
+    [CHAR_ANIM_SLIDE_KICK]                              = function(m, frame)
+                                                            if frame == 2 then
+                                                                m.marioBodyState.punchState = (2 << 6) | 6
+                                                            end
+                                                        end,
 }
 local EYETABLE_CR_DAVY = {
     [_G.charSelect.CS_ANIM_MENU] = MARIO_EYES_LOOK_RIGHT,
 }
 local ANIMTABLE_CR_J355 = {
-   [_G.charSelect.CS_ANIM_MENU]         = "cr_anim_j355_menu",
---    [CHAR_ANIM_IDLE_HEAD_LEFT] = "jess_idle",
---    [CHAR_ANIM_IDLE_HEAD_RIGHT] = "jess_idle",
---    [CHAR_ANIM_IDLE_HEAD_CENTER] = "jess_idle",
---    [CHAR_ANIM_FIRST_PERSON] = "jess_idle",
+    [_G.charSelect.CS_ANIM_MENU]        = "cr_anim_j355_menu",
+    [CHAR_ANIM_IDLE_HEAD_LEFT]          = "cr_anim_j355_idle",
+    [CHAR_ANIM_IDLE_HEAD_RIGHT]         = "cr_anim_j355_idle",
+    [CHAR_ANIM_IDLE_HEAD_CENTER]        = "cr_anim_j355_idle",
+    [CHAR_ANIM_FIRST_PERSON]            = "cr_anim_j355_idle_alt",
     [CHAR_ANIM_RUNNING]                 = function(m, frame)
                                             if get_global_timer() % 5 == 0 then
                                                 set_mario_particle_flags(m, PARTICLE_DUST, 0)
@@ -344,6 +349,17 @@ local ANIMTABLE_CR_J355 = {
                                             end
                                         end,
 }
+local HANDTABLE_CR_DAVY = {
+   [CHAR_ANIM_DOUBLE_JUMP_RISE]         = MARIO_HAND_OPEN,
+   [CHAR_ANIM_DOUBLE_JUMP_FALL]         = MARIO_HAND_OPEN,
+   [CHAR_ANIM_BACKFLIP]                 = MARIO_HAND_OPEN,
+   [CHAR_ANIM_SLIDE_KICK]               = MARIO_HAND_RIGHT_OPEN,
+   [CHAR_ANIM_THROW_LIGHT_OBJECT]       = MARIO_HAND_RIGHT_OPEN,
+   [CHAR_ANIM_GROUND_THROW]             = function(m, frame) if frame < 10 then return MARIO_HAND_RIGHT_OPEN end end,
+   [CHAR_ANIM_SLIDEJUMP]                = function(m, frame) if frame > 10 then return MARIO_HAND_RIGHT_OPEN end end,
+   [CHAR_ANIM_TRIPLE_JUMP_LAND]         = function(m, frame) if frame < 20 then return MARIO_HAND_OPEN end end,
+}
+
 local EYETABLE_CR_J355 = {
     [_G.charSelect.CS_ANIM_MENU] = MARIO_EYES_OPEN,
 }
@@ -389,7 +405,7 @@ local function on_character_select_load()
        _G.charSelect.character_add_palette_preset(E_MODEL_CR_J355, PALETTES_CR_J355[i], PALETTES_CR_J355[i].name)
     end
 
-    _G.charSelect.character_add_animations(E_MODEL_CR_DAVY, ANIMTABLE_CR_DAVY, EYETABLE_CR_DAVY)
+    _G.charSelect.character_add_animations(E_MODEL_CR_DAVY, ANIMTABLE_CR_DAVY, EYETABLE_CR_DAVY, HANDTABLE_CR_DAVY)
     --_G.charSelect.character_add_caps(E_MODEL_CR_DAVY, CAP_CR_DAVY)
     _G.charSelect.character_add_voice(E_MODEL_CR_DAVY, VOICETABLE_CR_DAVY)
     _G.charSelect.character_add_graffiti(CT_CR_DAVY, TEX_ART_CR_DAVY)
