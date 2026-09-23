@@ -202,6 +202,7 @@ end
 
 local function act_ice_skating(m)
     local e = gJ355States[m.playerIndex]
+    local s = gPlayerSyncTable[m.playerIndex]
 
     local targetSpeed = m.input & INPUT_NONZERO_ANALOG ~= 0 and 50 or 30
     local accel = 0
@@ -222,6 +223,9 @@ local function act_ice_skating(m)
         end
         if m.pos.y < (m.floorHeight + 5) and m.prevAction == ACT_LAVA_BOOST then
             play_character_sound(m, CHAR_SOUND_UH2_2)
+        end
+        if s.water > 0 then
+            e.hover = maxHover
         end
         e.skateSpeed = m.forwardVel
         e.skateAngle = m.faceAngle.y
@@ -380,6 +384,7 @@ hook_mario_action(ACT_FLUDD_HOVER, act_fludd_hover)
 local function act_springflip(m)
 
     set_mario_animation(m, MARIO_ANIM_TRIPLE_JUMP_GROUND_POUND)
+    smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_springflip")
 
     if m.actionTimer == 4 then
         set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
@@ -400,14 +405,14 @@ local function act_springflip(m)
     end
 
     local stepResult = m.actionState == 1 and common_air_action_step(m, ACT_TRIPLE_JUMP_LAND, MARIO_ANIM_TRIPLE_JUMP_GROUND_POUND, AIR_STEP_NONE) or 0
-    smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_springflip")
+    if stepResult == AIR_STEP_LANDED then
+        play_sound(SOUND_ACTION_TERRAIN_LANDING, m.marioObj.header.gfx.cameraToObject)
+    elseif stepResult == AIR_STEP_HIT_WALL then
+        set_mario_action(m, ACT_AIR_HIT_WALL, 0)
+    end
 
     if m.actionTimer == 6 or m.actionTimer == 15 then -- spin sound
         play_sound(SOUND_ACTION_TWIRL, m.marioObj.header.gfx.cameraToObject)
-    end
-
-    if stepResult == AIR_STEP_LANDED then
-        play_sound(SOUND_ACTION_TERRAIN_LANDING, m.marioObj.header.gfx.cameraToObject)
     end
 
     m.actionTimer = m.actionTimer + 1
@@ -712,6 +717,9 @@ local function j355_update(m)
                 s.water = maxWater
             else
                 s.water = s.water + 15
+            end
+            if e.hover ~= maxHover then
+                e.hover = maxHover
             end
         end
 
