@@ -3,7 +3,6 @@ if not _G.charSelectExists then return end
 
 local ACT_SKATE_JUMP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_ICE_SKATING = allocate_mario_action(ACT_GROUP_MOVING | ACT_FLAG_MOVING | ACT_FLAG_RIDING_SHELL)
-local ACT_ICE_DIVE_SLIDE = allocate_mario_action(ACT_GROUP_MOVING | ACT_FLAG_MOVING | ACT_FLAG_ATTACKING | ACT_FLAG_RIDING_SHELL)
 local ACT_FLUDD_HOVER = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_CONTROL_JUMP_HEIGHT)
 local ACT_SPRINGFLIP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_GALAXY_SPIN = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ATTACKING)
@@ -26,11 +25,14 @@ for i = 0, MAX_PLAYERS - 1 do
     e.prevVel = 0
     e.prevPosY = 0
     e.gfxY = 0
+    e.gfxZ = 0
     e.skateAngle = 0
+    e.skateSpeed = 0
     e.run = 0
     e.sprintCheck = false
     e.hudOffsetX = 0
     e.fluddVelY = 0
+    e.fluddLoop = -1
     -- spin
     e.stickLastAngle = 0
     e.spinDirection = 0
@@ -45,10 +47,10 @@ for i = 0, MAX_PLAYERS - 1 do
 end
 
 local SOUND_FLUDD_PICKUP    = audio_sample_load("cr_sound_wett_pickup.ogg")
-local SOUND_FLUDD_HOVER     = audio_sample_load("cr_sound_wett_hover.ogg")
-local SOUND_FLUDD_HOVER_END = audio_sample_load("cr_sound_wett_hover_end.ogg")
-local SOUND_FLUDD_CHARGE    = audio_sample_load("cr_sound_wett_charge.ogg")
-local SOUND_FLUDD_LOOP      = audio_stream_load("cr_sound_wett_loop.ogg")
+-- local SOUND_FLUDD_HOVER     = audio_sample_load("cr_sound_wett_hover.ogg")
+-- local SOUND_FLUDD_HOVER_END = audio_sample_load("cr_sound_wett_hover_end.ogg")
+-- local SOUND_FLUDD_CHARGE    = audio_sample_load("cr_sound_wett_charge.ogg")
+-- local SOUND_FLUDD_LOOP      = audio_stream_load("cr_sound_wett_loop.ogg")
 
 local TEX_CR_J355_TANK = get_texture_info("cr_hud_j355_tank")
 
@@ -62,7 +64,6 @@ local noSkateActions = {
     [ACT_STAR_DANCE_EXIT]       = true,
     [ACT_STAR_DANCE_NO_EXIT]    = true,
     [ACT_ICE_SKATING]           = true,
-    [ACT_ICE_DIVE_SLIDE]        = true,
     [ACT_PUTTING_ON_CAP]        = true,
     [ACT_RIDING_SHELL_GROUND]   = true,
     [ACT_RIDING_SHELL_JUMP]     = true,
@@ -202,10 +203,15 @@ end
 local function act_ice_skating(m)
     local e = gJ355States[m.playerIndex]
 
-    local targetSpeed = 30
-    local speed = m.forwardVel
+    local targetSpeed = m.input & INPUT_NONZERO_ANALOG ~= 0 and 50 or 30
     local accel = 0
-    local lerpRate = m.forwardVel <= 55 and 0.05 or 0.5
+    local lerpRate = 0.05
+    local turnAngle = math.abs(e.skateSpeed*35)
+    local dYaw = math.s16(e.skateAngle - m.intendedYaw)
+    local max = 0x1000
+    local val04 = math.clamp((dYaw * e.skateSpeed / 12), -max, max)
+    local absAngleY = math.abs(e.gfxY)
+    local angleZ = absAngleY < max and e.gfxZ * (1 - (absAngleY/max)) or 0
 
     set_mario_particle_flags(m, PARTICLE_DUST, 0)
     smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_skating")
@@ -214,7 +220,12 @@ local function act_ice_skating(m)
         if m.forwardVel > 0 then
             e.gfxY = -0x10000
         end
+        if m.pos.y < (m.floorHeight + 5) and m.prevAction == ACT_LAVA_BOOST then
+            play_character_sound(m, CHAR_SOUND_UH2_2)
+        end
+        e.skateSpeed = m.forwardVel
         e.skateAngle = m.faceAngle.y
+        e.gfxZ = 0
         m.actionState = 1
     elseif e.gfxY < 0 then
         e.gfxY = (e.gfxY + 1500) * 0.9
@@ -235,7 +246,7 @@ local function act_ice_skating(m)
         end
     end
 
-    if m.input & INPUT_Z_DOWN ~= 0 and e.gfxY >= 0 and e.gfxY < 0x7950 and m.forwardVel >= 50 then
+    if m.input & INPUT_Z_DOWN ~= 0 and e.gfxY >= 0 and e.gfxY < 0x7950 and m.forwardVel >= 30 then
         e.gfxY = e.gfxY + 0x700
     end
 
@@ -247,17 +258,12 @@ local function act_ice_skating(m)
         return set_mario_action(m, ACT_FREEFALL, 0)
     end
 
-    if m.input & INPUT_NONZERO_ANALOG ~= 0 then
-        targetSpeed = 55
-    else
-        targetSpeed = 30
-    end
-    speed = math.lerp(speed, targetSpeed, lerpRate)
+    e.skateSpeed = math.lerp(e.skateSpeed, targetSpeed, lerpRate)
     if m.forwardVel > 0 then
         update_walking_speed(m)
-        e.skateAngle = m.intendedYaw - approach_s32(math.s16(m.intendedYaw - e.skateAngle), 0, 0x800, 0x800)
+        e.skateAngle = approach_s16_symmetric(e.skateAngle, m.intendedYaw, turnAngle)
     end
-    mario_set_forward_vel(m, speed)
+    mario_set_forward_vel(m, e.skateSpeed)
     play_sound(SOUND_MOVING_SLIDE_DOWN_POLE, m.marioObj.header.gfx.cameraToObject)
 
     if m.pos.y > (m.waterLevel + 1) and m.floor.type ~= SURFACE_BURNING then
@@ -270,12 +276,9 @@ local function act_ice_skating(m)
         m.pos.y = m.pos.y + 1
         return set_mario_action(m, ACT_SKATE_JUMP, math.random(1, #iceJumps))
     end
-    if m.input & INPUT_B_PRESSED ~= 0 and e.gfxY == 0 then --m.forwardVel > 30 then
-        --m.pos.y = m.pos.y + 1
-        --m.vel.y = 20
-        --set_mario_action(m, ACT_DIVE, 0)
+    if m.input & INPUT_B_PRESSED ~= 0 and e.gfxY == 0 then
         play_character_sound(m, CHAR_SOUND_SPIN)
-        m.forwardVel = m.forwardVel + 5
+        e.skateSpeed = e.skateSpeed + 10
         e.gfxY = -0x20000
     end
     -- fall when ice cap ends
@@ -283,68 +286,18 @@ local function act_ice_skating(m)
         set_mario_action(m, ACT_FREEFALL, 0)
     end
 
+    e.gfxZ = approach_s16_symmetric(e.gfxZ, val04, 0x200)
+
     m.faceAngle.y = e.skateAngle
     m.marioObj.header.gfx.angle.y = m.faceAngle.y + e.gfxY
     m.marioObj.header.gfx.angle.x = 0
-    m.marioObj.header.gfx.angle.z = 0
+    m.marioObj.header.gfx.angle.z = angleZ
+
 
     m.actionTimer = m.actionTimer + 1
     return 0
 end
 hook_mario_action(ACT_ICE_SKATING, act_ice_skating)
-
-local function act_ice_dive_slide(m)
-    local e = gJ355States[m.playerIndex]
-
-    m.faceAngle.x = 0
-    m.vel.y = 0
-    set_mario_particle_flags(m, PARTICLE_DUST, 0)
-    set_mario_animation(m, CHAR_ANIM_DIVE)
-    play_sound(SOUND_MOVING_SLIDE_DOWN_POLE, m.marioObj.header.gfx.cameraToObject)
-
-    -- if m.actionState == 0 then
-    --     e.skateAngle = m.faceAngle.y
-    --     e.prevVel = m.forwardVel
-    --     m.actionState = 1
-    -- end
-
-    local stepResult = perform_ground_step(m)
-    if stepResult == GROUND_STEP_HIT_WALL then
-        m.pos.y = m.pos.y + 1
-        m.vel.y = 30
-        set_mario_particle_flags(m, PARTICLE_VERTICAL_STAR, 0)
-        set_mario_action(m, ACT_BACKWARD_AIR_KB, 0)
-    end
-
-    if m.pos.y > (m.waterLevel + 1) and m.floor.type ~= SURFACE_BURNING then
-        set_mario_action(m, ACT_DIVE_SLIDE, 0)
-    end
-
-    if m.input & INPUT_A_PRESSED ~= 0 or m.input & INPUT_B_PRESSED ~= 0 then
-        m.pos.y = m.pos.y + 1
-        if m.forwardVel < 0 then
-            set_mario_action(m, ACT_BACKWARD_ROLLOUT, 0)
-        else
-            set_mario_action(m, ACT_FORWARD_ROLLOUT, 0)
-        end
-    elseif m.input & INPUT_Z_PRESSED ~= 0 then
-        m.pos.y = m.pos.y + 1
-        set_mario_action(m, ACT_SPRINGFLIP, 0)
-    end
-    -- fall when ice cap ends
-    if (m.flags & MARIO_METAL_CAP) == 0 then
-        set_mario_action(m, ACT_FREEFALL, 0)
-    end
-
-    -- update_walking_speed(m)
-    -- e.skateAngle = m.intendedYaw - approach_s32(math.s16(m.intendedYaw - e.skateAngle), 0, 0x400, 0x400)
-    -- m.faceAngle.y = e.skateAngle
-    -- m.forwardVel = e.prevVel
-
-    m.actionTimer = m.actionTimer + 1
-    return 0
-end
-hook_mario_action(ACT_ICE_DIVE_SLIDE, act_ice_dive_slide)
 
 local function act_skate_jump(m)
     local e = gJ355States[m.playerIndex]
@@ -387,7 +340,7 @@ local function act_fludd_hover(m)
     if m.actionState == 0 then
         e.prevPosY = m.pos.y + 10
         e.fluddVelY = m.vel.y
-        audio_sample_play(SOUND_FLUDD_HOVER, m.pos, pause_check())
+        play_character_sound(m, CHAR_SOUND_WETT_HOVER)
         m.actionState = 1
     end
 
@@ -395,31 +348,21 @@ local function act_fludd_hover(m)
         target = 10
     end
 
-    --if e.prevPosY > m.pos.y and (e.prevPosY - m.pos.y) > 30 then
-    --    target = (e.prevPosY - m.pos.y)/10
-    --else
-    --    target = 3
-    --end
-
     local stepResult = common_air_action_step(m, ACT_FREEFALL, MARIO_ANIM_RUNNING_UNUSED, AIR_STEP_NONE)
     smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_fludd_hover")
-    m.faceAngle.y = m.intendedYaw - approach_s32(math.s16(m.intendedYaw - m.faceAngle.y), 0, 0x300, 0x300)
+    m.faceAngle.y = approach_s16_symmetric(m.faceAngle.y, m.intendedYaw, 0x300)
     set_mario_particle_flags(m, PARTICLE_SNOW, 0)
-    --spawn_mist_particles_variable(1, 100, 5)
-    e.fluddVelY = math.lerp(e.fluddVelY, target, 0.15) -- = approach_f32(m.vel.y, target, 5, (-3.8))
+    e.fluddVelY = math.lerp(e.fluddVelY, target, 0.15)
     m.vel.y = e.fluddVelY
 
     if m.forwardVel > 25 then
         m.forwardVel = m.forwardVel - 1
     end
     if stepResult == AIR_STEP_LANDED then
-        audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
+        play_character_sound(m, CHAR_SOUND_WETT_HOVER_END)
         set_mario_action(m, ACT_FREEFALL_LAND, 0)
     end
-    if m.controller.buttonDown & L_TRIG == 0 or e.hover < 1 or s.water < 1 then
-        if m.actionTimer < 73 then
-            audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
-        end
+    if m.controller.buttonDown & L_TRIG == 0 or e.hover == 0 or s.water == 0 then
         set_mario_action(m, ACT_FREEFALL, 0)
     end
     if m.input & INPUT_Z_PRESSED ~= 0 then
@@ -556,13 +499,13 @@ local function act_fludd_boost(m)
             play_character_sound(m, CHAR_SOUND_YAHOO_WAHA_YIPPEE)
             m.vel.y = 120
         elseif m.actionArg == 1 then
-            play_character_sound(m, CHAR_SOUND_YAH_WAH_HOO)
+            play_character_sound(m, CHAR_SOUND_WETT_BURST)
             m.vel.y = 50
         end
         if m.playerIndex == 0 then
             s.water = s.water - subtract
         end
-        audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
+        --audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
         set_mario_particle_flags(m, PARTICLE_SNOW | PARTICLE_MIST_CIRCLE, 0)
         m.actionState = 1
     end
@@ -579,6 +522,10 @@ local function act_fludd_boost(m)
         if m.input & INPUT_B_PRESSED ~= 0 then
             set_mario_action(m, ACT_DIVE, 0)
         end
+    end
+
+    if m.vel.y > 15 then
+        set_mario_particle_flags(m, PARTICLE_DUST, 0)
     end
 
     if m.input & INPUT_Z_PRESSED ~= 0 then
@@ -603,26 +550,15 @@ local function j355_set_action(m)
     if m.action == ACT_BACKFLIP then
         m.vel.y = m.vel.y + 7
     end
-    ---- better water recovery
-    --if m.action == ACT_WATER_JUMP then
-    --    m.vel.y = m.vel.y + 10
-    --end
-    -- reset fludd sound
-    if m.action ~= ACT_FLUDD_HOVER then
-        audio_sample_stop(SOUND_FLUDD_HOVER)
-    end
     -- spinjump
     if (m.action == ACT_JUMP or m.action == ACT_SIDE_FLIP or m.action == ACT_STEEP_JUMP) and e.spinInput ~= 0 then
         m.faceAngle.y = m.intendedYaw
         set_mario_action(m, ACT_SPINJUMP, 0)
     end
-    -- reset fludd sound
-    if m.action ~= ACT_DIVE_SLIDE then
-        audio_stream_stop(SOUND_FLUDD_LOOP)
-    end
 end
 
 local function j355_before_set_action(m, act)
+    local e = gJ355States[m.playerIndex]
     -- derpy crouch
     if act == ACT_START_CROUCHING then
         return ACT_CROUCHING
@@ -643,23 +579,12 @@ local function j355_before_set_action(m, act)
         return ACT_FREEFALL_LAND
     end
 
-    -- if act == ACT_LAVA_BOOST and m.flags & MARIO_METAL_CAP ~= 0 then
-    --     play_character_sound(m, CHAR_SOUND_COUGHING1)
-    --     if m.pos.y > m.floorHeight + 1 then
-    --         return ACT_AIR_HIT_WALL
-    --     elseif m.prevAction == ACT_DIVE then
-    --         return ACT_ICE_DIVE_SLIDE
-    --     else
-    --         return ACT_ICE_SKATING
-    --     end
-    -- end
-    -- if act == ACT_WALKING and m.floor.type == SURFACE_BURNING then
-    --     if m.prevAction ~= ACT_DIVE then
-    --         return ACT_ICE_SKATING
-    --     else
-    --         return ACT_ICE_DIVE_SLIDE
-    --     end
-    -- end
+    if (walkingActions[m.action] and not walkingActions[act]) or (m.action == ACT_DIVE_SLIDE and m.actionArg == 1) then
+        play_character_sound(m, CHAR_SOUND_UH2_2)
+    end
+    if m.action == ACT_DIVE_SLIDE then
+        e.fluddLoop = -1
+    end
 end
 
 local function j355_before_phys_step(m)
@@ -726,8 +651,13 @@ local function j355_update(m)
         local floorDist = m.floor.type == SURFACE_BURNING and m.floorHeight or m.waterLevel
         if m.pos.y < (floorDist + 1)
         and not noSkateActions[m.action] then
-            if m.action == ACT_DIVE or m.action == ACT_DIVE_SLIDE then
-                set_mario_action(m, ACT_ICE_DIVE_SLIDE, 0)
+            if m.action == ACT_DIVE or m.action == ACT_DIVE_SLIDE or m.action == ACT_STOMACH_SLIDE then
+                if m.forwardVel >= 0 then
+                    set_mario_action(m, ACT_FORWARD_ROLLOUT, 0)
+                else
+                    set_mario_action(m, ACT_BACKWARD_ROLLOUT, 0)
+                end
+                m.forwardVel = m.forwardVel * 0.9
             else
                 set_mario_action(m, ACT_ICE_SKATING, 0)
             end
@@ -774,6 +704,7 @@ local function j355_update(m)
         end
         if m.action == ACT_DIVE_SLIDE and m.controller.buttonPressed & L_TRIG ~= 0 then
             m.actionArg = 1
+            e.fluddLoop = 0
         end
 
         if m.pos.y < m.waterLevel and s.water < maxWater then
@@ -796,14 +727,16 @@ local function j355_update(m)
                 set_mario_action(m, ACT_FLUDD_BOOST, 0)
             end
             if e.hover == maxHover - 2 then
-                audio_sample_play(SOUND_FLUDD_CHARGE, m.pos, pause_check())
+                play_character_sound(m, CHAR_SOUND_WETT_CHARGE)
+                --audio_sample_play(SOUND_FLUDD_CHARGE, m.pos, pause_check())
             end
         else
             if m.pos.y == m.floorHeight then
                 e.hover = maxHover
             end
-            if m.controller.buttonReleased & L_TRIG ~= 0 or not walkingActions[m.action] then
-                audio_sample_stop(SOUND_FLUDD_CHARGE)
+            if m.controller.buttonReleased & L_TRIG ~= 0 and walkingActions[m.action] then
+                play_character_sound(m, CHAR_SOUND_UH2_2)
+                --audio_sample_stop(SOUND_FLUDD_CHARGE)
             end
         end
     else
@@ -820,13 +753,25 @@ local function j355_update(m)
             if m.pos.y > m.waterLevel then
                 s.water = s.water - 2
             end
-            audio_stream_play(SOUND_FLUDD_LOOP, false, 0.8 * pause_check())
+            --audio_stream_play(SOUND_FLUDD_LOOP, false, 0.8 * pause_check())
             if m.controller.buttonReleased & L_TRIG ~= 0 then
                 m.actionArg = 0
             end
-        elseif m.actionArg == 0 then
-            audio_stream_stop(SOUND_FLUDD_LOOP)
+            if e.fluddLoop == 1 then
+                play_character_sound(m, CHAR_SOUND_WETT_LOOP)
+            elseif e.fluddLoop > 318 then
+                e.fluddLoop = 0
+            end
+            e.fluddLoop = e.fluddLoop + 1
+        elseif m.actionArg == 0 and e.fluddLoop >= 0 then
+            --audio_stream_stop(SOUND_FLUDD_LOOP)
+            play_character_sound(m, CHAR_SOUND_UH2_2)
+            e.fluddLoop = -1
         end
+    end
+    -- fludd hover sound
+    if m.prevAction == ACT_FLUDD_HOVER and m.marioObj.header.gfx.animInfo.animFrame == -1 and e.hover > 3 then
+        play_character_sound(m, CHAR_SOUND_WETT_HOVER_END)
     end
 
     -- springflip
@@ -866,9 +811,12 @@ local function j355_sound(sound, pos)
 
     if sound == SOUND_GENERAL_COLLECT_1UP then
         audio_sample_play(SOUND_FLUDD_PICKUP, m.pos, pause_check())
-        set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
+        if m.playerIndex == 0 then
+            spawn_sync_object(id_bhvMistCircParticleSpawner,E_MODEL_NONE, m.pos.x, m.pos.y, m.pos.z, nil)
+        end
         s.water = maxWater
         e.hover = maxHover
+        return NO_SOUND
     end
 end
 

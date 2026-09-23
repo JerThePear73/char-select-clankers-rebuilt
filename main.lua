@@ -32,9 +32,9 @@ local SOUND_MENU_THEME_CR_DAVY = audio_stream_load('cr_davy_menu_theme.ogg')
 --local SOUND_MENU_THEME_CR_J355 = audio_stream_load('cr_j355_menu_theme.ogg')
 
 CHAR_SOUND_SPIN             = CHAR_SOUND_MAX + 1
-CHAR_SOUND_WETT_PICKUP      = CHAR_SOUND_MAX + 2
-CHAR_SOUND_WETT_HOVER       = CHAR_SOUND_MAX + 3
-CHAR_SOUND_WETT_HOVER_END   = CHAR_SOUND_MAX + 4
+CHAR_SOUND_WETT_HOVER       = CHAR_SOUND_MAX + 2
+CHAR_SOUND_WETT_HOVER_END   = CHAR_SOUND_MAX + 3
+CHAR_SOUND_WETT_BURST       = CHAR_SOUND_MAX + 4
 CHAR_SOUND_WETT_CHARGE      = CHAR_SOUND_MAX + 5
 CHAR_SOUND_WETT_LOOP        = CHAR_SOUND_MAX + 6
 
@@ -127,11 +127,11 @@ VOICETABLE_CR_J355 = { -- Voices from Veronica Voltage and other female characte
     [CHAR_SOUND_OKEY_DOKEY] = 'cr_robo_jess_oh_yeah.ogg',
     --CHAR_SOUND_MAX
     [CHAR_SOUND_SPIN] = 'cr_robo_jess_spin.ogg',
-    -- [CHAR_SOUND_WETT_PICKUP] = 'cr_sound_wett_pickup.ogg',
-    -- [CHAR_SOUND_WETT_HOVER] = 'cr_sound_wett_hover.ogg',
-    -- [CHAR_SOUND_WETT_HOVER_END] = 'cr_sound_wett_hover_end.ogg',
-    -- [CHAR_SOUND_WETT_CHARGE] = 'cr_sound_wett_charge.ogg',
-    -- [CHAR_SOUND_WETT_LOOP] = 'cr_sound_wett_loop.ogg',
+    [CHAR_SOUND_WETT_HOVER] = 'cr_sound_wett_hover.ogg',
+    [CHAR_SOUND_WETT_HOVER_END] = 'cr_sound_wett_hover_end.ogg',
+    [CHAR_SOUND_WETT_BURST] = {'cr_robo_jess_burst_ha.ogg', 'cr_robo_jess_burst_ya.ogg'},
+    [CHAR_SOUND_WETT_CHARGE] = 'cr_sound_wett_charge.ogg',
+    [CHAR_SOUND_WETT_LOOP] = 'cr_sound_wett_loop.ogg',
 }
 
 local PALETTES_CR_DAVY = {
