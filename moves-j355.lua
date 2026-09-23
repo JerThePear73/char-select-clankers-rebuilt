@@ -19,27 +19,29 @@ local burstCost = maxWater/50
 
 gJ355States = {}
 for i = 0, MAX_PLAYERS - 1 do
-    gJ355States[i] = {
-        water = 0,
-        hover = 0,
-        prevVel = 0,
-        prevPosY = 0,
-        gfxY = 0,
-        skateAngle = 0,
-        run = 0,
-        sprintCheck = false,
-        hudOffsetX = 0,
-        fluddVelY = 0,
-        -- spin
-        stickLastAngle = 0,
-        spinDirection = 0,
-        spinBufferTimer = 0,
-        spinInput = 0,
-        lastStickMag = 0,
-        angleDeltaQueue = {}
-    }
-    gPlayerSyncTable[i].hasFludd = false
+    gJ355States[i] = {}
+    local e = gJ355States[i]
+    --e.water = 0
+    e.hover = 0
+    e.prevVel = 0
+    e.prevPosY = 0
+    e.gfxY = 0
+    e.skateAngle = 0
+    e.run = 0
+    e.sprintCheck = false
+    e.hudOffsetX = 0
+    e.fluddVelY = 0
+    -- spin
+    e.stickLastAngle = 0
+    e.spinDirection = 0
+    e.spinBufferTimer = 0
+    e.spinInput = 0
+    e.lastStickMag = 0
+    e.angleDeltaQueue = {}
     for j=0,(ANGLE_QUEUE_SIZE-1) do gJ355States[i].angleDeltaQueue[j] = 0 end
+    -- sync table
+    gPlayerSyncTable[i].water = 0
+    --gPlayerSyncTable[i].hover = 0
 end
 
 local SOUND_FLUDD_PICKUP    = audio_sample_load("cr_sound_wett_pickup.ogg")
@@ -62,6 +64,9 @@ local noSkateActions = {
     [ACT_ICE_SKATING]           = true,
     [ACT_ICE_DIVE_SLIDE]        = true,
     [ACT_PUTTING_ON_CAP]        = true,
+    [ACT_RIDING_SHELL_GROUND]   = true,
+    [ACT_RIDING_SHELL_JUMP]     = true,
+    [ACT_RIDING_SHELL_FALL]     = true,
 }
 local fluddActions = {
     [ACT_JUMP]              = true,
@@ -376,6 +381,7 @@ hook_mario_action(ACT_SKATE_JUMP, act_skate_jump)
 
 local function act_fludd_hover(m)
     local e = gJ355States[m.playerIndex]
+    local s = gPlayerSyncTable[m.playerIndex]
     local target = 3
 
     if m.actionState == 0 then
@@ -410,7 +416,7 @@ local function act_fludd_hover(m)
         audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
         set_mario_action(m, ACT_FREEFALL_LAND, 0)
     end
-    if m.controller.buttonDown & L_TRIG == 0 or e.hover < 1 or e.water < 1 then
+    if m.controller.buttonDown & L_TRIG == 0 or e.hover < 1 or s.water < 1 then
         if m.actionTimer < 73 then
             audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
         end
@@ -420,7 +426,7 @@ local function act_fludd_hover(m)
         set_mario_action(m, ACT_GROUND_POUND, 0)
     end
 
-    e.water = e.water - 2
+    s.water = s.water - 2
     e.hover = e.hover - 1
 
     m.actionTimer = m.actionTimer + 1
@@ -541,6 +547,8 @@ end
 hook_mario_action(ACT_SPINJUMP, act_spinjump)
 
 local function act_fludd_boost(m)
+    local s = gPlayerSyncTable[m.playerIndex]
+    local subtract = m.actionArg == 0 and rocketJumpCost or burstCost
 
     if m.actionState == 0 then
         if m.actionArg == 0 then
@@ -551,10 +559,14 @@ local function act_fludd_boost(m)
             play_character_sound(m, CHAR_SOUND_YAH_WAH_HOO)
             m.vel.y = 50
         end
+        if m.playerIndex == 0 then
+            s.water = s.water - subtract
+        end
         audio_sample_play(SOUND_FLUDD_HOVER_END, m.pos, pause_check())
         set_mario_particle_flags(m, PARTICLE_SNOW | PARTICLE_MIST_CIRCLE, 0)
         m.actionState = 1
     end
+
     local stepResult = common_air_action_step(m, ACT_FREEFALL_LAND, MARIO_ANIM_DOUBLE_JUMP_FALL, AIR_STEP_CHECK_LEDGE_GRAB)
 
     if m.actionArg == 0 then
@@ -669,13 +681,9 @@ end
 
 local function j355_update(m)
     local e = gJ355States[m.playerIndex]
+    local s = gPlayerSyncTable[m.playerIndex]
 
     mario_update_spin_input(m)
-    if e.water > 0 then
-        gPlayerSyncTable[m.playerIndex].hasFludd = true
-    else
-        gPlayerSyncTable[m.playerIndex].hasFludd = false
-    end
 
     -- sprinting
     --if m.action == ACT_WALKING then
@@ -730,7 +738,7 @@ local function j355_update(m)
         set_mario_action(m, ACT_JUMP, 1)
         m.vel.y = m.vel.y + 20
     end
-    if e.water > 0 and m.action == ACT_DOUBLE_JUMP and m.vel.y > 30 and m.actionArg == 1 then
+    if s.water > 0 and m.action == ACT_DOUBLE_JUMP and m.vel.y > 30 and m.actionArg == 1 then
         set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
         m.vel.x = 0
         m.vel.z = 0
@@ -756,10 +764,10 @@ local function j355_update(m)
     end
 
     -- fludd physics
-    e.water = math.clamp(e.water, 0, maxWater)
+    s.water = math.clamp(s.water, 0, maxWater)
     e.hover = math.clamp(e.hover, 0, maxHover)
-    if e.water > 0 then
-        local canFludd = fluddActions[m.action] and m.vel.y < 15
+    if s.water > 0 then
+        local canFludd = fluddActions[m.action] and m.vel.y < 25
 
         if canFludd and m.controller.buttonPressed & L_TRIG ~= 0 and e.hover > 0 then
             set_mario_action(m, ACT_FLUDD_HOVER, 0)
@@ -768,26 +776,24 @@ local function j355_update(m)
             m.actionArg = 1
         end
 
-        if m.pos.y < m.waterLevel and e.water < maxWater then
-            if e.water > (maxWater - 15) then
-                e.water = maxWater
+        if m.pos.y < m.waterLevel and s.water < maxWater then
+            if s.water > (maxWater - 15) then
+                s.water = maxWater
             else
-                e.water = e.water + 15
+                s.water = s.water + 15
             end
         end
 
-        if m.action == ACT_GALAXY_SPIN and m.controller.buttonPressed & L_TRIG ~= 0 and e.hover == maxHover and e.water >= burstCost then
+        if m.action == ACT_GALAXY_SPIN and m.controller.buttonPressed & L_TRIG ~= 0 and e.hover == maxHover and s.water >= burstCost then
             e.hover = 0
-            e.water = e.water - burstCost
             set_mario_action(m, ACT_FLUDD_BOOST, 1)
         end
 
-        if walkingActions[m.action] and e.water > rocketJumpCost and m.controller.buttonDown & L_TRIG ~= 0 then
+        if walkingActions[m.action] and s.water >= rocketJumpCost and m.controller.buttonDown & L_TRIG ~= 0 then
             if e.hover > 0 then
                 e.hover = e.hover - 2
             else
                 set_mario_action(m, ACT_FLUDD_BOOST, 0)
-                e.water = e.water - rocketJumpCost
             end
             if e.hover == maxHover - 2 then
                 audio_sample_play(SOUND_FLUDD_CHARGE, m.pos, pause_check())
@@ -812,7 +818,7 @@ local function j355_update(m)
             end
             set_mario_particle_flags(m, PARTICLE_SNOW, 0)
             if m.pos.y > m.waterLevel then
-                e.water = e.water - 2
+                s.water = s.water - 2
             end
             audio_stream_play(SOUND_FLUDD_LOOP, false, 0.8 * pause_check())
             if m.controller.buttonReleased & L_TRIG ~= 0 then
@@ -847,19 +853,21 @@ end
 
 local function j355_level_init()
     local m = gMarioStates[0]
-    local e = gJ355States[m.playerIndex]
+    --local e = gJ355States[m.playerIndex]
+    local s = gPlayerSyncTable[m.playerIndex]
 
-    e.water = 0
+    s.water = 0
 end
 
 local function j355_sound(sound, pos)
     local m = gMarioStates[0]
     local e = gJ355States[m.playerIndex]
+    local s = gPlayerSyncTable[m.playerIndex]
 
     if sound == SOUND_GENERAL_COLLECT_1UP then
         audio_sample_play(SOUND_FLUDD_PICKUP, m.pos, pause_check())
         set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
-        e.water = maxWater
+        s.water = maxWater
         e.hover = maxHover
     end
 end
@@ -879,7 +887,8 @@ local function j355_hud()
 
     local m = gMarioStates[0]
     local e = gJ355States[0]
-    local targetX = e.water > 0 and 10 or - 40
+    local s = gPlayerSyncTable[m.playerIndex]
+    local targetX = s.water > 0 and 10 or - 40
 
     e.hudOffsetX = math.lerp(e.hudOffsetX, targetX, 0.2)
 
@@ -887,9 +896,9 @@ local function j355_hud()
     djui_hud_set_resolution(RESOLUTION_N64)
     djui_hud_set_font(FONT_RECOLOR_HUD)
 
-    local waterScale = (e.water/maxWater)
+    local waterScale = (s.water/maxWater)
     local hoverScale = (e.hover/maxHover)
-    local waterText = string.format("%.0f", math.ceil(e.water/30))
+    local waterText = string.format("%.0f", math.ceil(s.water/30))
 
     djui_hud_render_texture_tile(TEX_CR_J355_TANK, e.hudOffsetX, 222, 0.25, 1, 32, 8, 32, 8)
     djui_hud_set_color(84, 151, 254, 200)

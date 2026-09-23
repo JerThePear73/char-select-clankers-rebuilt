@@ -32,7 +32,7 @@ function cr_j355_fludd_switch_func(node, matStackIndex)
     local m = geo_get_mario_state()
     local s = gPlayerSyncTable[m.playerIndex]
     local toNode = 0
-    if s.hasFludd then
+    if s.water > 0 then
         toNode = 1
     else
         toNode = 0
