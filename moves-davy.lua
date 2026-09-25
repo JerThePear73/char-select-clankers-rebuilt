@@ -1,27 +1,31 @@
 if not _G.charSelectExists then return end
 
 local ACT_DAVY_FLUTTER = allocate_mario_action(ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION | ACT_GROUP_AIRBORNE) -- this is just taken from extra chars cuz i dont feel like coding this from scratch rn
-local ACT_DAVY_MISSILE = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_MOVING | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION | ACT_FLAG_ATTACKING)
-local ACT_DAVY_DASH = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_MOVING | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION | ACT_FLAG_ATTACKING)
+local ACT_DAVY_MISSILE = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION | ACT_FLAG_ATTACKING)
+local ACT_DAVY_DASH = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION | ACT_FLAG_ATTACKING)
+local ACT_DAVY_THROW_FIREBALL = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_DAVY_CARRY = allocate_mario_action(ACT_GROUP_MOVING | ACT_FLAG_MOVING)
 local ACT_DAVY_CREATE_BOMB = allocate_mario_action(ACT_GROUP_STATIONARY | ACT_FLAG_STATIONARY)
 
 gDavyStates = {}
 for i = 0, MAX_PLAYERS - 1 do
-    gDavyStates[i] = {
-        gfxY = 0,
-        gfxZ = 0,
-        bombCharge = 0,
-        canGPCancel = true,
-        canFlutter = false,
-        canDash = true,
-        hasWing = false,
-        flySpeed = 0,
-        flyBoostCooldown = 0,
-    }
+    gDavyStates[i] = {}
+    local e = gDavyStates[i]
+    e.gfxY = 0
+    e.gfxZ = 0
+    e.bombCharge = 0
+    e.canGPCancel = true
+    e.canFlutter = false
+    e.canDash = true
+    e.hasWing = false
+    e.flySpeed = 0
+    e.flyBoostCooldown = 0
+    e.fireballsThrown = 0
 end
 
 local flyBoostCooldownMax = 45
+local ARG_FIREBALL = 10
+local maxFireballThrows = 2
 local bombTable = {
     E_MODEL_BLACK_BOBOMB,
     E_MODEL_BLACK_BOBOMB,
@@ -36,6 +40,7 @@ local flutterActions = {
     [ACT_FREEFALL] = true,
     [ACT_SIDE_FLIP] = true,
     [ACT_WALL_KICK_AIR] = true,
+    [ACT_DAVY_THROW_FIREBALL] = true,
 }
 local TEX_CR_DAVY_BOMB_METER = get_texture_info("cr_hud_davy_bomb_meter")
 local TEX_CR_DAVY_BOMB_BAR = get_texture_info("cr_hud_davy_bomb_bar")
@@ -282,17 +287,48 @@ local function act_davy_create_bomb(m)
 end
 hook_mario_action(ACT_DAVY_CREATE_BOMB, act_davy_create_bomb)
 
+local function act_davy_throw_fireball(m)
+    local e = gDavyStates[m.playerIndex]
+
+    if m.actionState == 0 then
+        m.faceAngle.y = m.intendedYaw
+        m.actionTimer = 0
+        m.vel.y = 20
+        e.fireballsThrown = e.fireballsThrown + 1
+        play_character_sound(m, CHAR_SOUND_YAH_WAH_HOO)
+        set_anim_to_frame(m, 0)
+        spawn_fireball(m)
+        m.actionState = 1
+    end
+
+    local stepResult = common_air_action_step(m, ACT_FREEFALL_LAND, MARIO_ANIM_THROW_LIGHT_OBJECT, AIR_STEP_NONE)
+    if stepResult == AIR_STEP_LANDED then
+        play_sound(SOUND_ACTION_TERRAIN_LANDING, m.marioObj.header.gfx.cameraToObject)
+    elseif stepResult == AIR_STEP_HIT_WALL then
+        return set_mario_action(m, ACT_AIR_HIT_WALL, 0)
+    end
+
+    if m.actionTimer > 10 and m.input & INPUT_B_PRESSED ~= 0 and m.flags & MARIO_METAL_CAP ~= 0 and e.fireballsThrown < maxFireballThrows then
+        m.actionState = 0
+    end
+
+    m.actionTimer = m.actionTimer + 1
+    return 0
+end
+hook_mario_action(ACT_DAVY_THROW_FIREBALL, act_davy_throw_fireball)
+
 ----------
 -- DAVY --
 ----------
 
-function davy_set_action(m)
+local function davy_set_action(m)
     local e = gDavyStates[m.playerIndex]
 
     if m.pos.y == m.floorHeight then
         e.canGPCancel = true
         e.canDash = true
         e.canFlutter = true
+        e.fireballsThrown = 0
     end
 
     -- juiced single jump
@@ -314,7 +350,7 @@ function davy_set_action(m)
     end
 end
 
-function davy_before_set_action(m, act)
+local function davy_before_set_action(m, act)
     local e = gDavyStates[m.playerIndex]
     -- derpy crouch
     if act == ACT_START_CROUCHING then
@@ -328,9 +364,18 @@ function davy_before_set_action(m, act)
         m.pos.y = m.pos.y + 30
         return ACT_AIR_THROW
     end
+
+    -- fire
+    if m.flags & MARIO_METAL_CAP ~= 0 and e.fireballsThrown < maxFireballThrows then
+        if (act == ACT_DIVE and m.input & INPUT_A_DOWN == 0)
+        or act == ACT_MOVE_PUNCHING
+        or act == ACT_JUMP_KICK then
+            return ACT_DAVY_THROW_FIREBALL
+        end
+    end
 end
 
-function davy_update(m)
+local function davy_update(m)
     local e = gDavyStates[m.playerIndex]
 
     -- skeletal missile
@@ -400,17 +445,19 @@ function davy_update(m)
 
     if m.flags & MARIO_METAL_CAP ~= 0 then
         if m.pos.y > m.waterLevel then
-            local range = 80
-            local rangex = m.pos.x + math.random(0 - range, range)
-            local rangey = m.pos.y + math.random(0, range)
-            local rangez = m.pos.z + math.random(0 - range, range)
+            local headPos = gVec3fZero{}
+            get_mario_anim_part_pos(m, MARIO_ANIM_PART_HEAD, headPos)
+            local range = 10
+            local offsetX = math.random(0 - range, range)
+            local offsetY = math.random(0 - range, range) + 10
+            local offsetZ = math.random(0 - range, range)
             if m.playerIndex == 0 then
-                spawn_non_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, rangex, rangey, rangez, function(o)
-                    obj_scale(o, math.random(5, 15)/10)
+                spawn_non_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, headPos.x + offsetX, headPos.y + offsetY, headPos.z + offsetZ, function(o)
+                    obj_scale(o, 3)
                 end)
             end
         else
-            if get_global_timer() % 5 == 0 then
+            if get_global_timer() % 10 == 0 then
                 play_sound(SOUND_GENERAL_FLAME_OUT, m.marioObj.header.gfx.cameraToObject)
             end
             set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
@@ -418,6 +465,7 @@ function davy_update(m)
                 m.capTimer = m.capTimer - 2
             end
         end
+        m.marioBodyState.eyeState = MARIO_EYES_DEAD
     end
 
     -- bomb stashing
@@ -428,7 +476,7 @@ function davy_update(m)
     end
 
     -- better throwing
-    if (m.action == ACT_AIR_THROW and m.actionTimer == 5) then
+    if (m.action == ACT_AIR_THROW and m.actionTimer == 5) and m.usedObj ~= nil then
         m.usedObj.oForwardVel = 30 + m.forwardVel
         m.usedObj.oVelY = 20
     end
@@ -438,6 +486,19 @@ local function davy_interact(m, o, type)
     local e = gDavyStates[m.playerIndex]
     if m.playerIndex == 0 and type == INTERACT_COIN then
         e.bombCharge = e.bombCharge + (25 * o.oDamageOrCoinValue)
+    end
+    if obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 or obj_has_behavior_id(o, id_bhvFlyGuy) ~= 0 then
+        local oTwirlEnemy = nil
+        if obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 then
+            oTwirlEnemy = obj_get_nearest_object_with_behavior_id(m.marioObj, id_bhvSpindrift)
+        elseif obj_has_behavior_id(o, id_bhvFlyGuy) ~= 0 then
+            oTwirlEnemy = obj_get_nearest_object_with_behavior_id(m.marioObj, id_bhvFlyGuy)
+        end
+        if oTwirlEnemy ~= nil and oTwirlEnemy.oInteractStatus & INT_STATUS_WAS_ATTACKED ~= 0 and m.action ~= ACT_TWIRLING and m.flags & MARIO_METAL_CAP == 0 then
+            spawn_non_sync_object(id_bhvMetalCap, E_MODEL_MARIOS_METAL_CAP, o.oPosX, o.oPosY + 100, o.oPosZ, function(cap)
+                cap.oVelY = 20
+            end)
+        end
     end
 end
 
@@ -449,6 +510,13 @@ local function davy_sound(sound, pos)
         e.bombCharge = e.bombCharge + 15
     end
     --djui_chat_message_create(tostring(sound))
+end
+
+local function davy_hazard(m, type)
+    if m.flags & MARIO_METAL_CAP ~= 0 and type == SURFACE_BURNING then
+        spawn_non_sync_object(id_bhvKoopaShellFlame, E_MODEL_RED_FLAME, m.pos.x, m.floorHeight, m.pos.z, nil)
+        return false
+    end
 end
 
 ---------
@@ -484,4 +552,5 @@ _G.charSelect.character_hook_moveset(CT_CR_DAVY, HOOK_ON_SET_MARIO_ACTION, davy_
 _G.charSelect.character_hook_moveset(CT_CR_DAVY, HOOK_ON_INTERACT, davy_interact)
 _G.charSelect.character_hook_moveset(CT_CR_DAVY, HOOK_ON_PLAY_SOUND, davy_sound)
 _G.charSelect.character_hook_moveset(CT_CR_DAVY, HOOK_BEFORE_SET_MARIO_ACTION, davy_before_set_action)
+_G.charSelect.character_hook_moveset(CT_CR_DAVY, HOOK_ALLOW_HAZARD_SURFACE, davy_hazard)
 _G.charSelect.character_hook_moveset(CT_CR_DAVY, HOOK_ON_HUD_RENDER_BEHIND, davy_hud)

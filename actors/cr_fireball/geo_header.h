@@ -1,0 +1,12 @@
+extern const GeoLayout cr_fireball_geo[];
+extern u8 cr_fireball_fireball_alpha_rgba16[];
+extern Vtx cr_fireball_Fireball_mesh_layer_1_vtx_0[26];
+extern Gfx cr_fireball_Fireball_mesh_layer_1_tri_0[];
+extern Vtx cr_fireball_Fireball_mesh_layer_5_vtx_0[30];
+extern Gfx cr_fireball_Fireball_mesh_layer_5_tri_0[];
+extern Gfx mat_cr_fireball_Fireball_Inside[];
+extern Gfx mat_revert_cr_fireball_Fireball_Inside[];
+extern Gfx mat_cr_fireball_Fireball_Outside[];
+extern Gfx mat_revert_cr_fireball_Fireball_Outside[];
+extern Gfx cr_fireball_Fireball_mesh_layer_1[];
+extern Gfx cr_fireball_Fireball_mesh_layer_5[];

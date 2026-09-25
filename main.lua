@@ -13,6 +13,8 @@ end
 local E_MODEL_CR_DAVY = smlua_model_util_get_id('cr_davy_geo')
 local E_MODEL_CR_J355 = smlua_model_util_get_id('cr_j355_geo')
 
+init_physbone_chain(E_MODEL_CR_DAVY, 0, 0.2, 1, 90, 90)
+
 -- Credits --
 _G.charSelect.credit_add(TEXT_MOD_NAME, "JerThePear", "Creator")
 _G.charSelect.credit_add(TEXT_MOD_NAME, "DavyDaBest", "Character")
@@ -282,12 +284,12 @@ local PALETTES_CR_J355 = {
     },
 }
 
---local CAP_CR_DAVY = {
---    normal = smlua_model_util_get_id("jj_cap_davy_scarf_geo"),
---    wing = smlua_model_util_get_id("jj_cap_davy_star_geo"),
---    metal = smlua_model_util_get_id("jj_cap_davy_magma_geo"),
---    metalWing = smlua_model_util_get_id("jj_cap_davy_magmastar_geo"),
---}
+local CAP_CR_DAVY = {
+   normal       = smlua_model_util_get_id("cr_davy_cap_scarf_geo"),
+   wing         = smlua_model_util_get_id("cr_davy_cap_red_star_geo"),
+   metal        = smlua_model_util_get_id("cr_davy_cap_fire_flower_geo"),
+   metalWing    = smlua_model_util_get_id("cr_davy_cap_fire_star_geo"),
+}
 
 local ANIMTABLE_CR_DAVY = {
     [_G.charSelect.CS_ANIM_MENU]                        = "cr_anim_davy_menu",
@@ -297,10 +299,10 @@ local ANIMTABLE_CR_DAVY = {
                                                             end
                                                             return "cr_anim_davy_single_jump"
                                                         end,
-    [CHAR_ANIM_IDLE_HEAD_LEFT]                          = "cr_anim_davy_idle",
-    [CHAR_ANIM_IDLE_HEAD_RIGHT]                         = "cr_anim_davy_idle",
-    [CHAR_ANIM_IDLE_HEAD_CENTER]                        = "cr_anim_davy_idle",
-    [CHAR_ANIM_FIRST_PERSON]                            = "cr_anim_davy_idle",
+    -- [CHAR_ANIM_IDLE_HEAD_LEFT]                          = "cr_anim_davy_idle",
+    -- [CHAR_ANIM_IDLE_HEAD_RIGHT]                         = "cr_anim_davy_idle",
+    -- [CHAR_ANIM_IDLE_HEAD_CENTER]                        = "cr_anim_davy_idle",
+    -- [CHAR_ANIM_FIRST_PERSON]                            = "cr_anim_davy_idle",
     [CHAR_ANIM_RUNNING]                                 = function(m, frame)
                                                             m.marioBodyState.torsoAngle.x = (m.forwardVel - 15) * -100
                                                             m.marioBodyState.torsoAngle.z = 0
@@ -409,18 +411,18 @@ end
 local CSloaded = false
 local function on_character_select_load()
     for i = 1, #PALETTES_CR_DAVY do
-        _G.charSelect.character_add_palette_preset(E_MODEL_CR_DAVY, PALETTES_CR_DAVY[i], PALETTES_CR_DAVY[i].name)
+        charSelect.character_add_palette_preset(E_MODEL_CR_DAVY, PALETTES_CR_DAVY[i], PALETTES_CR_DAVY[i].name)
     end
     for i = 1, #PALETTES_CR_J355 do
-       _G.charSelect.character_add_palette_preset(E_MODEL_CR_J355, PALETTES_CR_J355[i], PALETTES_CR_J355[i].name)
+       charSelect.character_add_palette_preset(E_MODEL_CR_J355, PALETTES_CR_J355[i], PALETTES_CR_J355[i].name)
     end
 
-    _G.charSelect.character_add_animations(E_MODEL_CR_DAVY, ANIMTABLE_CR_DAVY, EYETABLE_CR_DAVY, HANDTABLE_CR_DAVY)
-    --_G.charSelect.character_add_caps(E_MODEL_CR_DAVY, CAP_CR_DAVY)
-    _G.charSelect.character_add_voice(E_MODEL_CR_DAVY, VOICETABLE_CR_DAVY)
-    _G.charSelect.character_add_graffiti(CT_CR_DAVY, TEX_ART_CR_DAVY)
-    _G.charSelect.character_add_menu_instrumental(CT_CR_DAVY, SOUND_MENU_THEME_CR_DAVY)
-    _G.charSelect.character_add_health_meter(CT_CR_DAVY, function (localIndex, health, prevX, prevY, prevScaleX, prevScaleY, x, y, scaleX, scaleY)
+    charSelect.character_add_animations(E_MODEL_CR_DAVY, ANIMTABLE_CR_DAVY, EYETABLE_CR_DAVY, HANDTABLE_CR_DAVY)
+    charSelect.character_add_caps(E_MODEL_CR_DAVY, CAP_CR_DAVY)
+    charSelect.character_add_voice(E_MODEL_CR_DAVY, VOICETABLE_CR_DAVY)
+    charSelect.character_add_graffiti(CT_CR_DAVY, TEX_ART_CR_DAVY)
+    charSelect.character_add_menu_instrumental(CT_CR_DAVY, SOUND_MENU_THEME_CR_DAVY)
+    charSelect.character_add_health_meter(CT_CR_DAVY, function (localIndex, health, prevX, prevY, prevScaleX, prevScaleY, x, y, scaleX, scaleY)
         local segments = health >> 8
 
         djui_hud_render_texture(TEX_HEALTH_CR_DAVY, x, y, 1, 1)
@@ -429,12 +431,12 @@ local function on_character_select_load()
         end
     end)
 
-    _G.charSelect.character_add_animations(E_MODEL_CR_J355, ANIMTABLE_CR_J355, EYETABLE_CR_J355, HANDTABLE_CR_JESS)
+    charSelect.character_add_animations(E_MODEL_CR_J355, ANIMTABLE_CR_J355, EYETABLE_CR_J355, HANDTABLE_CR_JESS)
     --_G.charSelect.character_add_caps(E_MODEL_CR_J355, CAP_CR_J355)
-    _G.charSelect.character_add_voice(E_MODEL_CR_J355, VOICETABLE_CR_J355)
+    charSelect.character_add_voice(E_MODEL_CR_J355, VOICETABLE_CR_J355)
     --_G.charSelect.character_add_graffiti(CT_CR_J355, TEX_ART_CR_J355)
     --_G.charSelect.character_add_menu_instrumental(CT_CR_J355, SOUND_MENU_THEME_CR_J355)
-    _G.charSelect.character_add_health_meter(CT_CR_J355, function (localIndex, health, prevX, prevY, prevScaleX, prevScaleY, x, y, scaleX, scaleY)
+    charSelect.character_add_health_meter(CT_CR_J355, function (localIndex, health, prevX, prevY, prevScaleX, prevScaleY, x, y, scaleX, scaleY)
         local segments = health >> 8
         djui_hud_render_texture(TEX_HEALTH_CR_J355, x, y, 1, 1)
         if segments > 0 then
@@ -443,24 +445,24 @@ local function on_character_select_load()
     end)
 
     -- Categories
-    _G.charSelect.character_set_category(CT_CR_DAVY, "Clankers: Rebuilt")
-    _G.charSelect.character_set_category(CT_CR_DAVY, "Squishy Workshop")
-    _G.charSelect.character_set_category(CT_CR_J355, "Clankers: Rebuilt")
-    _G.charSelect.character_set_category(CT_CR_J355, "Squishy Workshop")
+    charSelect.character_set_category(CT_CR_DAVY, "Clankers: Rebuilt")
+    charSelect.character_set_category(CT_CR_DAVY, "Squishy Workshop")
+    charSelect.character_set_category(CT_CR_J355, "Clankers: Rebuilt")
+    charSelect.character_set_category(CT_CR_J355, "Squishy Workshop")
 
     CSloaded = true
 end
 
 local function on_character_sound(m, sound)
     if not CSloaded then return end
-    if _G.charSelect.character_get_voice(m) == VOICETABLE_CR_DAVY then return _G.charSelect.voice.sound(m, sound) end
-    if _G.charSelect.character_get_voice(m) == VOICETABLE_CR_J355 then return _G.charSelect.voice.sound(m, sound) end
+    if charSelect.character_get_voice(m) == VOICETABLE_CR_DAVY then return charSelect.voice.sound(m, sound) end
+    if charSelect.character_get_voice(m) == VOICETABLE_CR_J355 then return charSelect.voice.sound(m, sound) end
 end
 
 local function on_character_snore(m)
     if not CSloaded then return end
-    if _G.charSelect.character_get_voice(m) == VOICETABLE_CR_DAVY then return _G.charSelect.voice.snore(m) end
-    if _G.charSelect.character_get_voice(m) == VOICETABLE_CR_J355 then return _G.charSelect.voice.snore(m) end
+    if charSelect.character_get_voice(m) == VOICETABLE_CR_DAVY then return charSelect.voice.snore(m) end
+    if charSelect.character_get_voice(m) == VOICETABLE_CR_J355 then return charSelect.voice.snore(m) end
 end
 
 hook_event(HOOK_ON_MODS_LOADED, on_character_select_load)
@@ -478,7 +480,7 @@ local function davy_flying_star(m)
     local np = gNetworkPlayers[m.playerIndex]
     local e = gExtraStates[m.playerIndex]
 
-    if CT_CR_DAVY == _G.charSelect.character_get_current_number(m.playerIndex) then
+    if CT_CR_DAVY == charSelect.character_get_current_number(m.playerIndex) then
         if m.flags & MARIO_WING_CAP ~= 0 then
             network_player_set_override_palette_color(np, EMBLEM,   {r = 192, g = 0, b = 0})
             network_player_set_override_palette_color(np, CAP,      {r = 192, g = 0, b = 0})
@@ -491,6 +493,11 @@ local function davy_flying_star(m)
         elseif m.flags & MARIO_WING_CAP == 0 and e.davyHasWing then
             network_player_reset_override_palette(np)
             e.davyHasWing = false
+        end
+        if m.marioBodyState.modelState & MODEL_STATE_NOISE_ALPHA ~= 0 then
+            local opacityFator = (1 - (math.abs(math.sin(get_global_timer()*0.05)))) * 1
+            local flags = m.marioBodyState.modelState & MODEL_STATE_METAL ~= 0 and (0x100 | MODEL_STATE_METAL) or 0x100
+            m.marioBodyState.modelState = math.floor((m.marioBodyState.modelState & ~flags) * opacityFator) | flags
         end
     end
 end

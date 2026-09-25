@@ -94,9 +94,9 @@ Lights1 cr_j355_Feet__SKIN__lights = gdSPDefLights1(
 	0x6E, 0x6E, 0x6E,
 	0xDD, 0xDD, 0xDD, 0x28, 0x28, 0x28);
 
-Gfx cr_j355_robo_jess_dial_2_rgba16_aligner[] = {gsSPEndDisplayList()};
-u8 cr_j355_robo_jess_dial_2_rgba16[] = {
-	#include "actors/cr_j355/robo_jess_dial_2.rgba16.inc.c"
+Gfx cr_j355_j355_dial_back_rgba16_aligner[] = {gsSPEndDisplayList()};
+u8 cr_j355_j355_dial_back_rgba16[] = {
+	#include "actors/cr_j355/j355_dial_back.rgba16.inc.c"
 };
 
 Gfx cr_j355_j355_rough_base_rgba16_aligner[] = {gsSPEndDisplayList()};
@@ -109,9 +109,9 @@ u8 cr_j355_j355_rough_shine_rgba16[] = {
 	#include "actors/cr_j355/j355_rough_shine.rgba16.inc.c"
 };
 
-Gfx cr_j355_robo_jess_dials_rgba16_aligner[] = {gsSPEndDisplayList()};
-u8 cr_j355_robo_jess_dials_rgba16[] = {
-	#include "actors/cr_j355/robo_jess_dials.rgba16.inc.c"
+Gfx cr_j355_j355_dials_front_rgba16_aligner[] = {gsSPEndDisplayList()};
+u8 cr_j355_j355_dials_front_rgba16[] = {
+	#include "actors/cr_j355/j355_dials_front.rgba16.inc.c"
 };
 
 Gfx cr_j355_j355_screw_ia8_aligner[] = {gsSPEndDisplayList()};
@@ -273,28 +273,18 @@ Gfx cr_j355_Torso_mesh_layer_1_tri_0[] = {
 	gsSPEndDisplayList(),
 };
 
-Vtx cr_j355_Torso_mesh_layer_1_vtx_1[36] = {
+Vtx cr_j355_Torso_mesh_layer_1_vtx_1[50] = {
 	{{ {41, 2, 50}, 0, {-16, -16}, {228, 238, 123, 255} }},
-	{{ {80, 19, 44}, 0, {-16, -16}, {75, 62, 81, 255} }},
-	{{ {53, 46, 48}, 0, {-16, -16}, {14, 85, 93, 255} }},
-	{{ {4, 30, 37}, 0, {-16, -16}, {241, 94, 84, 255} }},
-	{{ {53, 46, 48}, 0, {950, 574}, {14, 85, 93, 255} }},
-	{{ {7, 2, 39}, 0, {-16, -16}, {8, 229, 124, 255} }},
-	{{ {64, -31, 43}, 0, {-16, -16}, {15, 134, 31, 255} }},
-	{{ {8, -20, 27}, 0, {-16, -16}, {5, 147, 66, 255} }},
-	{{ {53, -34, 21}, 0, {-16, -16}, {254, 129, 11, 255} }},
-	{{ {53, -34, 0}, 0, {-16, -16}, {1, 129, 0, 255} }},
-	{{ {7, -22, 0}, 0, {-16, -16}, {2, 129, 0, 255} }},
-	{{ {8, -20, -27}, 0, {-16, -16}, {5, 148, 190, 255} }},
-	{{ {53, -34, -21}, 0, {-16, -16}, {254, 129, 245, 255} }},
-	{{ {64, -31, -43}, 0, {-16, -16}, {15, 134, 225, 255} }},
-	{{ {7, 2, -39}, 0, {-16, -16}, {6, 232, 131, 255} }},
-	{{ {41, 2, -50}, 0, {-16, -16}, {228, 240, 133, 255} }},
+	{{ {80, 19, 44}, 0, {-16, -16}, {19, 1, 126, 255} }},
+	{{ {53, 46, 48}, 0, {-16, -16}, {249, 8, 127, 255} }},
+	{{ {53, 46, -47}, 0, {-16, -16}, {209, 113, 222, 255} }},
 	{{ {4, 30, -36}, 0, {-16, -16}, {241, 95, 173, 255} }},
-	{{ {53, 46, -47}, 0, {-16, -16}, {13, 86, 164, 255} }},
 	{{ {53, 61, 1}, 0, {-16, -16}, {199, 113, 0, 255} }},
-	{{ {80, 19, -44}, 0, {-16, -16}, {74, 63, 174, 255} }},
+	{{ {4, 30, 37}, 0, {-16, -16}, {241, 94, 84, 255} }},
+	{{ {53, 46, 48}, 0, {-16, -16}, {209, 113, 34, 255} }},
+	{{ {53, 46, -47}, 0, {-16, -16}, {81, 91, 219, 255} }},
 	{{ {82, 29, -25}, 0, {-16, -16}, {100, 75, 234, 255} }},
+	{{ {80, 19, -44}, 0, {-16, -16}, {86, 77, 202, 255} }},
 	{{ {93, 4, -44}, 0, {-16, -16}, {123, 21, 235, 255} }},
 	{{ {96, -4, -17}, 0, {-16, -16}, {115, 252, 203, 255} }},
 	{{ {90, 12, 0}, 0, {-16, -16}, {104, 72, 0, 255} }},
@@ -303,48 +293,73 @@ Vtx cr_j355_Torso_mesh_layer_1_vtx_1[36] = {
 	{{ {93, 4, 44}, 0, {-16, -16}, {123, 21, 21, 255} }},
 	{{ {86, -21, 46}, 0, {-16, -16}, {90, 167, 12, 255} }},
 	{{ {88, -23, 16}, 0, {-16, -16}, {84, 161, 6, 255} }},
-	{{ {88, -23, 0}, 0, {-16, -16}, {65, 147, 0, 255} }},
-	{{ {88, -23, -16}, 0, {-16, -16}, {84, 161, 250, 255} }},
+	{{ {53, -34, 21}, 0, {-16, -16}, {254, 129, 11, 255} }},
+	{{ {64, -31, 43}, 0, {-16, -16}, {15, 134, 31, 255} }},
+	{{ {8, -20, 27}, 0, {-16, -16}, {5, 147, 66, 255} }},
+	{{ {7, 2, 39}, 0, {-16, -16}, {8, 229, 124, 255} }},
+	{{ {53, 46, 48}, 0, {950, 574}, {249, 8, 127, 255} }},
+	{{ {53, -34, 0}, 0, {-16, -16}, {1, 129, 0, 255} }},
+	{{ {7, -22, 0}, 0, {-16, -16}, {2, 129, 0, 255} }},
+	{{ {8, -20, -27}, 0, {-16, -16}, {5, 148, 190, 255} }},
+	{{ {53, -34, -21}, 0, {-16, -16}, {254, 129, 245, 255} }},
+	{{ {64, -31, -43}, 0, {-16, -16}, {15, 134, 225, 255} }},
+	{{ {7, 2, -39}, 0, {-16, -16}, {6, 232, 131, 255} }},
+	{{ {41, 2, -50}, 0, {-16, -16}, {228, 240, 133, 255} }},
+	{{ {53, 46, -47}, 0, {-16, -16}, {247, 11, 130, 255} }},
+	{{ {41, 2, -50}, 0, {-16, -16}, {228, 240, 133, 255} }},
+	{{ {53, 46, -47}, 0, {-16, -16}, {247, 11, 130, 255} }},
+	{{ {80, 19, -44}, 0, {-16, -16}, {18, 4, 130, 255} }},
+	{{ {53, -34, -21}, 0, {-16, -16}, {254, 129, 245, 255} }},
+	{{ {64, -31, -43}, 0, {-16, -16}, {15, 134, 225, 255} }},
 	{{ {86, -21, -46}, 0, {-16, -16}, {90, 167, 244, 255} }},
-	{{ {53, 46, 48}, 0, {-16, 1008}, {14, 85, 93, 255} }},
-	{{ {80, 19, 44}, 0, {-16, 622}, {75, 62, 81, 255} }},
+	{{ {88, -23, -16}, 0, {-16, -16}, {84, 161, 250, 255} }},
+	{{ {96, -4, -17}, 0, {-16, -16}, {115, 252, 203, 255} }},
+	{{ {93, 4, -44}, 0, {-16, -16}, {123, 21, 235, 255} }},
+	{{ {88, -23, 0}, 0, {-16, -16}, {65, 147, 0, 255} }},
+	{{ {53, -34, 0}, 0, {-16, -16}, {1, 129, 0, 255} }},
+	{{ {88, -23, 16}, 0, {-16, -16}, {84, 161, 6, 255} }},
+	{{ {96, -4, 17}, 0, {-16, -16}, {115, 252, 53, 255} }},
+	{{ {53, -34, 21}, 0, {-16, -16}, {254, 129, 11, 255} }},
+	{{ {53, 46, 48}, 0, {-16, 1008}, {81, 90, 37, 255} }},
+	{{ {80, 19, 44}, 0, {-16, 622}, {86, 76, 54, 255} }},
 	{{ {82, 29, 25}, 0, {-16, -16}, {100, 75, 22, 255} }},
 	{{ {93, 4, 44}, 0, {-16, 704}, {123, 21, 21, 255} }},
 };
 
 Gfx cr_j355_Torso_mesh_layer_1_tri_1[] = {
 	gsSPVertex(cr_j355_Torso_mesh_layer_1_vtx_1 + 0, 32, 0),
-	gsSP2Triangles(0, 1, 2, 0, 3, 0, 4, 0),
-	gsSP2Triangles(3, 5, 0, 0, 6, 0, 5, 0),
-	gsSP2Triangles(7, 6, 5, 0, 7, 8, 6, 0),
-	gsSP2Triangles(7, 9, 8, 0, 7, 10, 9, 0),
-	gsSP2Triangles(9, 10, 11, 0, 11, 12, 9, 0),
-	gsSP2Triangles(13, 12, 11, 0, 14, 13, 11, 0),
-	gsSP2Triangles(14, 15, 13, 0, 14, 16, 15, 0),
-	gsSP2Triangles(17, 15, 16, 0, 17, 16, 18, 0),
-	gsSP2Triangles(3, 18, 16, 0, 18, 3, 2, 0),
-	gsSP2Triangles(15, 17, 19, 0, 17, 20, 19, 0),
-	gsSP2Triangles(19, 20, 21, 0, 21, 20, 22, 0),
-	gsSP2Triangles(23, 22, 20, 0, 24, 23, 20, 0),
-	gsSP2Triangles(25, 23, 24, 0, 24, 26, 25, 0),
-	gsSP2Triangles(26, 27, 25, 0, 27, 28, 25, 0),
-	gsSP2Triangles(8, 28, 27, 0, 27, 6, 8, 0),
-	gsSP2Triangles(28, 8, 9, 0, 9, 29, 28, 0),
-	gsSP2Triangles(9, 30, 29, 0, 9, 12, 30, 0),
-	gsSP2Triangles(31, 30, 12, 0, 12, 13, 31, 0),
-	gsSP2Triangles(22, 30, 31, 0, 22, 29, 30, 0),
-	gsSP2Triangles(21, 22, 31, 0, 28, 29, 25, 0),
-	gsSPVertex(cr_j355_Torso_mesh_layer_1_vtx_1 + 32, 4, 0),
-	gsSP2Triangles(0, 1, 2, 0, 2, 1, 3, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
+	gsSP2Triangles(6, 5, 4, 0, 5, 6, 7, 0),
+	gsSP2Triangles(8, 9, 10, 0, 10, 9, 11, 0),
+	gsSP2Triangles(11, 9, 12, 0, 13, 12, 9, 0),
+	gsSP2Triangles(14, 13, 9, 0, 15, 13, 14, 0),
+	gsSP2Triangles(14, 16, 15, 0, 16, 17, 15, 0),
+	gsSP2Triangles(17, 18, 15, 0, 19, 18, 17, 0),
+	gsSP2Triangles(17, 20, 19, 0, 21, 19, 20, 0),
+	gsSP2Triangles(21, 20, 22, 0, 20, 0, 22, 0),
+	gsSP2Triangles(6, 22, 0, 0, 6, 0, 23, 0),
+	gsSP2Triangles(21, 24, 19, 0, 21, 25, 24, 0),
+	gsSP2Triangles(24, 25, 26, 0, 26, 27, 24, 0),
+	gsSP2Triangles(28, 27, 26, 0, 29, 28, 26, 0),
+	gsSP2Triangles(29, 30, 28, 0, 29, 4, 30, 0),
+	gsSP1Triangle(31, 30, 4, 0),
+	gsSPVertex(cr_j355_Torso_mesh_layer_1_vtx_1 + 32, 18, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
+	gsSP2Triangles(5, 6, 3, 0, 7, 6, 5, 0),
+	gsSP2Triangles(8, 7, 5, 0, 7, 9, 6, 0),
+	gsSP2Triangles(10, 6, 9, 0, 10, 9, 11, 0),
+	gsSP2Triangles(11, 9, 12, 0, 11, 13, 10, 0),
+	gsSP2Triangles(10, 3, 6, 0, 14, 15, 16, 0),
+	gsSP1Triangle(16, 15, 17, 0),
 	gsSPEndDisplayList(),
 };
 
 Vtx cr_j355_Torso_mesh_layer_1_vtx_2[5] = {
-	{{ {53, 46, -47}, 0, {-282, 1062}, {13, 86, 164, 255} }},
-	{{ {53, 61, 1}, 0, {1015, 1105}, {85, 94, 0, 255} }},
-	{{ {82, 29, -25}, 0, {355, -20}, {100, 75, 234, 255} }},
-	{{ {82, 29, 25}, 0, {1634, -23}, {100, 75, 22, 255} }},
-	{{ {53, 46, 48}, 0, {2327, 1055}, {14, 85, 93, 255} }},
+	{{ {53, 46, -47}, 0, {-252, 1062}, {81, 91, 219, 255} }},
+	{{ {53, 61, 1}, 0, {1045, 1105}, {85, 94, 0, 255} }},
+	{{ {82, 29, -25}, 0, {385, -20}, {100, 75, 234, 255} }},
+	{{ {82, 29, 25}, 0, {1664, -23}, {100, 75, 22, 255} }},
+	{{ {53, 46, 48}, 0, {2357, 1055}, {81, 90, 37, 255} }},
 };
 
 Gfx cr_j355_Torso_mesh_layer_1_tri_2[] = {
@@ -437,16 +452,16 @@ Gfx cr_j355_Torso_mesh_layer_1_tri_4[] = {
 };
 
 Vtx cr_j355_Torso_mesh_layer_5_vtx_0[10] = {
-	{{ {53, 48, -47}, 0, {190, 1036}, {9, 121, 220, 255} }},
-	{{ {4, 31, -36}, 0, {360, 1954}, {196, 111, 241, 255} }},
-	{{ {53, 62, 1}, 0, {1013, 1036}, {15, 126, 0, 255} }},
-	{{ {4, 31, 37}, 0, {1658, 1954}, {196, 111, 15, 255} }},
-	{{ {53, 48, 48}, 0, {1837, 1036}, {9, 121, 36, 255} }},
-	{{ {53, 48, -47}, 0, {-291, 1060}, {9, 121, 220, 255} }},
-	{{ {53, 62, 1}, 0, {1012, 1103}, {15, 126, 0, 255} }},
-	{{ {82, 30, -25}, 0, {355, -15}, {85, 93, 241, 255} }},
-	{{ {82, 30, 25}, 0, {1637, -17}, {86, 92, 15, 255} }},
-	{{ {53, 48, 48}, 0, {2318, 1059}, {9, 121, 36, 255} }},
+	{{ {53, 47, -47}, 0, {190, 1036}, {11, 121, 220, 255} }},
+	{{ {4, 31, -36}, 0, {360, 1954}, {198, 112, 240, 255} }},
+	{{ {53, 61, 1}, 0, {1013, 1036}, {16, 126, 0, 255} }},
+	{{ {4, 31, 37}, 0, {1658, 1954}, {198, 112, 16, 255} }},
+	{{ {53, 47, 48}, 0, {1837, 1036}, {11, 121, 36, 255} }},
+	{{ {53, 47, -47}, 0, {-276, 1060}, {11, 121, 220, 255} }},
+	{{ {53, 61, 1}, 0, {1027, 1103}, {16, 126, 0, 255} }},
+	{{ {82, 29, -25}, 0, {370, -15}, {85, 93, 241, 255} }},
+	{{ {82, 29, 25}, 0, {1653, -17}, {86, 92, 15, 255} }},
+	{{ {53, 47, 48}, 0, {2333, 1059}, {11, 121, 36, 255} }},
 };
 
 Gfx cr_j355_Torso_mesh_layer_5_tri_0[] = {
@@ -454,6 +469,21 @@ Gfx cr_j355_Torso_mesh_layer_5_tri_0[] = {
 	gsSP2Triangles(0, 1, 2, 0, 3, 2, 1, 0),
 	gsSP2Triangles(2, 3, 4, 0, 5, 6, 7, 0),
 	gsSP2Triangles(7, 6, 8, 0, 8, 6, 9, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx cr_j355_2_Dial_Rot_DL_mesh_layer_1_vtx_0[5] = {
+	{{ {1, 0, -7}, 0, {50, 795}, {255, 255, 255, 255} }},
+	{{ {1, 0, 7}, 0, {746, 795}, {255, 255, 255, 255} }},
+	{{ {1, 24, 0}, 0, {50, -39}, {255, 255, 255, 255} }},
+	{{ {1, -7, 3}, 0, {942, 1031}, {255, 255, 255, 255} }},
+	{{ {1, -7, -3}, 0, {50, 1031}, {255, 255, 255, 255} }},
+};
+
+Gfx cr_j355_2_Dial_Rot_DL_mesh_layer_1_tri_0[] = {
+	gsSPVertex(cr_j355_2_Dial_Rot_DL_mesh_layer_1_vtx_0 + 0, 5, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
+	gsSP1Triangle(3, 0, 4, 0),
 	gsSPEndDisplayList(),
 };
 
@@ -6026,7 +6056,7 @@ Gfx mat_cr_j355_Dials__SHIRT_[] = {
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT, TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, cr_j355_robo_jess_dial_2_rgba16),
+	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, cr_j355_j355_dial_back_rgba16),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 4095, 128),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 6, 0, G_TX_CLAMP | G_TX_NOMIRROR, 6, 0),
@@ -6095,11 +6125,26 @@ Gfx mat_cr_j355_Dials_Overlay__EMBLEM_[] = {
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, TEXEL0, SHADE, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, TEXEL0, SHADE, TEXEL0, 0, ENVIRONMENT, 0),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, cr_j355_robo_jess_dials_rgba16),
+	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, cr_j355_j355_dials_front_rgba16),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 4095, 128),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 6, 0, G_TX_CLAMP | G_TX_NOMIRROR, 6, 0),
 	gsDPSetTileSize(0, 0, 0, 252, 252),
+	gsSPEndDisplayList(),
+};
+
+Gfx mat_cr_j355_Dial_Red[] = {
+	gsSPGeometryMode(G_SHADE | G_LIGHTING, 0),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, PRIMITIVE, 0, 0, 0, ENVIRONMENT),
+	gsSPTexture(65535, 65535, 0, 0, 1),
+	gsDPSetPrimColor(0, 0, 255, 0, 0, 255),
+	gsSPEndDisplayList(),
+};
+
+Gfx mat_revert_cr_j355_Dial_Red[] = {
+	gsSPGeometryMode(0, G_SHADE | G_LIGHTING),
+	gsDPPipeSync(),
 	gsSPEndDisplayList(),
 };
 
@@ -6244,6 +6289,7 @@ Gfx mat_cr_j355_Evil_Logo__EMBLEM__layer2[] = {
 
 Gfx mat_revert_cr_j355_Evil_Logo__EMBLEM__layer2[] = {
 	gsDPPipeSync(),
+	gsDPSetRenderMode(G_RM_AA_ZB_OPA_DECAL, G_RM_AA_ZB_OPA_DECAL2),
 	gsSPEndDisplayList(),
 };
 
@@ -6483,6 +6529,13 @@ Gfx cr_j355_Torso_mesh_layer_1[] = {
 Gfx cr_j355_Torso_mesh_layer_5[] = {
 	gsSPDisplayList(mat_cr_j355_Dials_Overlay__EMBLEM_),
 	gsSPDisplayList(cr_j355_Torso_mesh_layer_5_tri_0),
+	gsSPEndDisplayList(),
+};
+
+Gfx cr_j355_2_Dial_Rot_DL_mesh_layer_1[] = {
+	gsSPDisplayList(mat_cr_j355_Dial_Red),
+	gsSPDisplayList(cr_j355_2_Dial_Rot_DL_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_cr_j355_Dial_Red),
 	gsSPEndDisplayList(),
 };
 

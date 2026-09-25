@@ -1,32 +1,34 @@
 if not _G.charSelectExists then return end
 
-T = function (l) local t = {} for _, v in ipairs(l) do t[v] = true end return t end
+-- T = function (l) local t = {} for _, v in ipairs(l) do t[v] = true end return t end
 
-local customAnims = T{
-    "cr_anim_davy_idle"
-}
+-- local customAnims = T{
+--     "cr_anim_davy_idle"
+-- }
 
---- @param node GraphNode
-function davy_selective_corrective(node)
-    local isCorrective = cast_graph_node(node).parameter == 1
-    local scale = cast_graph_node(node.next)
-    local o = geo_get_current_object()
-    local gfx = o.header.gfx
-    local isCustomAnim = customAnims[smlua_anim_util_get_current_animation_name(o)]
+-- --- @param node GraphNode
+-- function davy_selective_corrective(node)
+--     local isCorrective = cast_graph_node(node).parameter == 1
+--     local scale = cast_graph_node(node.next)
+--     local o = geo_get_current_object()
+--     local gfx = o.header.gfx
+--     local isCustomAnim = customAnims[smlua_anim_util_get_current_animation_name(o)]
 
-    --log_to_console((isCorrective and "corrective: " or "initial scale: ") .. scale.scale)
+--     --log_to_console((isCorrective and "corrective: " or "initial scale: ") .. scale.scale)
 
-    scale.scale = (
-        isCustomAnim and (
-            isCorrective and 1 or 0.25
-        ) or (
-            isCorrective and 0.45747375488281 or 0.54647827148438
-        )
-    )
+--     scale.scale = (
+--         isCustomAnim and (
+--             isCorrective and 1 or 0.25
+--         ) or (
+--             isCorrective and 0.45747375488281 or 0.54647827148438
+--         )
+--     )
 
-    geo_skip_interpolation(node.next, gfx)
-end
+--     geo_skip_interpolation(node.next, gfx)
+-- end
 
+---@param node GraphNode
+---@param matStackIndex integer
 function cr_j355_fludd_switch_func(node, matStackIndex)
     local asSwitchNode = cast_graph_node(node)
     local m = geo_get_mario_state()
@@ -38,4 +40,15 @@ function cr_j355_fludd_switch_func(node, matStackIndex)
         toNode = 0
     end
     asSwitchNode.selectedCase = toNode
+end
+
+---@param node GraphNode
+---@param matStackIndex integer
+function cr_j355_health_dial_func(node, matStackIndex)
+    local nodeRotAlign = cast_graph_node(node.next)
+    local nodeRotNeedle = cast_graph_node(node.next.children)
+    local m = geo_get_mario_state()
+    local rot = (m.health - 0x480) * 15
+    nodeRotAlign.rotation.z = degrees_to_sm64(-90 - 45)
+    nodeRotNeedle.rotation.x = rot
 end

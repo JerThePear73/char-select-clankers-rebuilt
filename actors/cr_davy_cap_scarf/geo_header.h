@@ -1,0 +1,18 @@
+extern const GeoLayout cr_davy_cap_scarf_Cap_Boo_Shroom[];
+extern const GeoLayout cr_davy_cap_scarf_geo[];
+extern Lights1 cr_davy_cap_scarf_Scarf__CAP__lights;
+extern Lights1 cr_davy_cap_scarf_Ghost_Shroom_lights;
+extern Lights1 cr_davy_cap_scarf_Ghost_Shroom_Eyes_lights;
+extern u8 cr_davy_cap_scarf_ghost_eyes_rgba16[];
+extern Vtx cr_davy_cap_scarf_Cap_DL_mesh_layer_1_vtx_0[87];
+extern Gfx cr_davy_cap_scarf_Cap_DL_mesh_layer_1_tri_0[];
+extern Vtx cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1_vtx_0[83];
+extern Gfx cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1_tri_0[];
+extern Vtx cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1_vtx_1[6];
+extern Gfx cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1_tri_1[];
+extern Gfx mat_cr_davy_cap_scarf_Scarf__CAP_[];
+extern Gfx mat_cr_davy_cap_scarf_Ghost_Shroom[];
+extern Gfx mat_cr_davy_cap_scarf_Ghost_Shroom_Eyes[];
+extern Gfx cr_davy_cap_scarf_Cap_DL_mesh_layer_1[];
+extern Gfx cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1[];
+extern Gfx cr_davy_cap_scarf_material_revert_render_settings[];
