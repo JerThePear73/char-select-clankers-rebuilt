@@ -451,11 +451,11 @@ local function davy_update(m)
             local offsetX = math.random(0 - range, range)
             local offsetY = math.random(0 - range, range) + 10
             local offsetZ = math.random(0 - range, range)
-            if m.playerIndex == 0 then
+            --if m.playerIndex == 0 then
                 spawn_non_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, headPos.x + offsetX, headPos.y + offsetY, headPos.z + offsetZ, function(o)
                     obj_scale(o, 3)
                 end)
-            end
+            --end
         else
             if get_global_timer() % 10 == 0 then
                 play_sound(SOUND_GENERAL_FLAME_OUT, m.marioObj.header.gfx.cameraToObject)
@@ -465,7 +465,7 @@ local function davy_update(m)
                 m.capTimer = m.capTimer - 2
             end
         end
-        m.marioBodyState.eyeState = MARIO_EYES_DEAD
+        --m.marioBodyState.eyeState = MARIO_EYES_DEAD
     end
 
     -- bomb stashing
@@ -487,7 +487,7 @@ local function davy_interact(m, o, type)
     if m.playerIndex == 0 and type == INTERACT_COIN then
         e.bombCharge = e.bombCharge + (25 * o.oDamageOrCoinValue)
     end
-    if obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 or obj_has_behavior_id(o, id_bhvFlyGuy) ~= 0 then
+    if (obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 or obj_has_behavior_id(o, id_bhvFlyGuy) ~= 0) and m.playerIndex == 0 then
         local oTwirlEnemy = nil
         if obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 then
             oTwirlEnemy = obj_get_nearest_object_with_behavior_id(m.marioObj, id_bhvSpindrift)
@@ -527,7 +527,7 @@ function davy_hud()
     local m = gMarioStates[0]
     local e = gDavyStates[0]
 
-    if gNetworkPlayers[0].currActNum == 99 or gMarioStates[0].action == ACT_INTRO_CUTSCENE or hud_is_hidden() or obj_get_first_with_behavior_id(id_bhvActSelector) then return end
+    if gNetworkPlayers[0].currActNum == 99 or gMarioStates[0].action == ACT_INTRO_CUTSCENE or obj_get_first_with_behavior_id(id_bhvActSelector) then return end --or hud_is_hidden() then return end
         local davyBombCount = 0
         local davyBombMeterScale = ((e.bombCharge / 500) * 10)
 

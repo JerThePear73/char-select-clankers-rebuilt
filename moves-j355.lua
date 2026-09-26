@@ -6,7 +6,6 @@ local ACT_ICE_SKATING = allocate_mario_action(ACT_GROUP_MOVING | ACT_FLAG_MOVING
 local ACT_FLUDD_HOVER = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_CONTROL_JUMP_HEIGHT)
 local ACT_SPRINGFLIP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_GALAXY_SPIN = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ATTACKING)
-local ACT_SPINJUMP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_FLUDD_BOOST = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 
 local maxWater = 3000
@@ -81,7 +80,6 @@ local fluddActions = {
     [ACT_FORWARD_ROLLOUT]   = true,
     [ACT_STEEP_JUMP]        = true,
     [ACT_TRIPLE_JUMP]       = true,
-    [ACT_SPINJUMP]          = true,
 }
 local spinActions = {
     [ACT_LONG_JUMP]     = true,
@@ -450,50 +448,6 @@ local function act_galaxy_spin(m)
 end
 hook_mario_action(ACT_GALAXY_SPIN, act_galaxy_spin)
 
-local function act_spinjump(m)
-    local e = gJ355States[m.playerIndex]
-    smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_ice_jump_2")
-    m.marioBodyState.handState = MARIO_HAND_OPEN
-
-    if m.actionState == 0 then
-        play_character_sound(m, CHAR_SOUND_YAHOO_WAHA_YIPPEE)
-        e.gfxY = 0
-        m.vel.y = 55
-        m.actionState = 1
-    end
-
-    if m.actionTimer <= 12 then
-        for i=0, m.actionTimer do
-            if m.actionTimer % 3 == 0 then
-                play_sound_with_freq_scale(SOUND_ACTION_TWIRL, m.marioObj.header.gfx.cameraToObject, 1 + (i/12)*1.5)
-            end
-        end
-    elseif m.input & INPUT_Z_PRESSED ~= 0 then
-        return set_mario_action(m, ACT_GROUND_POUND, 0)
-    elseif m.input & INPUT_B_PRESSED ~= 0 then
-        if m.input & INPUT_NONZERO_ANALOG ~= 0 then
-            set_mario_action(m, ACT_DIVE, 0)
-        else
-            return set_mario_action(m, ACT_GALAXY_SPIN, 0)
-        end
-    end
-
-    local stepResult = common_air_action_step(m, ACT_FREEFALL_LAND, MARIO_ANIM_START_TWIRL, AIR_STEP_CHECK_LEDGE_GRAB)
-    if stepResult == AIR_STEP_HIT_WALL then
-        set_mario_action(m, ACT_AIR_HIT_WALL, 0)
-    elseif stepResult == AIR_STEP_GRABBED_LEDGE then
-        m.marioObj.header.gfx.animInfo.animID = -1
-    end
-
-    e.gfxY = e.gfxY + 0x4000
-    m.vel.y = m.vel.y + 1
-    m.marioObj.header.gfx.angle.y = m.faceAngle.y + e.gfxY
-
-    m.actionTimer = m.actionTimer + 1
-    return 0
-end
-hook_mario_action(ACT_SPINJUMP, act_spinjump)
-
 local function act_fludd_boost(m)
     local s = gPlayerSyncTable[m.playerIndex]
     local subtract = m.actionArg == 0 and rocketJumpCost or burstCost
@@ -556,9 +510,9 @@ local function j355_set_action(m)
         m.vel.y = m.vel.y + 7
     end
     -- spinjump
-    if (m.action == ACT_JUMP or m.action == ACT_SIDE_FLIP or m.action == ACT_STEEP_JUMP) and e.spinInput ~= 0 then
-        m.faceAngle.y = m.intendedYaw
-        set_mario_action(m, ACT_SPINJUMP, 0)
+    if (m.action == ACT_JUMP or m.action == ACT_STEEP_JUMP or (m.action == ACT_SIDE_FLIP and m.actionArg ~= 73)) and e.spinInput ~= 0 then
+        set_mario_action(m, ACT_SIDE_FLIP, 73)
+        m.vel.y = 55
     end
 end
 
@@ -582,6 +536,8 @@ local function j355_before_set_action(m, act)
         return ACT_GALAXY_SPIN
     elseif act == ACT_JUMP_LAND and m.actionArg == 1 then
         return ACT_FREEFALL_LAND
+    elseif m.action == ACT_SIDE_FLIP and m.actionArg == 73 and act == ACT_SIDE_FLIP_LAND then
+        return ACT_FREEFALL_LAND
     end
 
     if (walkingActions[m.action] and not walkingActions[act]) or (m.action == ACT_DIVE_SLIDE and m.actionArg == 1) then
@@ -592,43 +548,12 @@ local function j355_before_set_action(m, act)
     end
 end
 
-local function j355_before_phys_step(m)
-    local hScale = 1.0
-    local vScale = 1.0
-
-    -- faster swimming
-    if (m.action & ACT_FLAG_SWIMMING) ~= 0 then
-        hScale = hScale * 1.5
-        if m.action ~= ACT_WATER_PLUNGE and m.action ~= ACT_FORWARD_WATER_KB and m.action ~= ACT_BACKWARD_WATER_KB then
-            vScale = vScale * 1.5
-        end
-    end
-
-    m.vel.x = m.vel.x * hScale
-    m.vel.y = m.vel.y * vScale
-    m.vel.z = m.vel.z * hScale
-end
-
 local function j355_update(m)
     local e = gJ355States[m.playerIndex]
     local s = gPlayerSyncTable[m.playerIndex]
 
     mario_update_spin_input(m)
 
-    -- sprinting
-    --if m.action == ACT_WALKING then
-    --    if m.forwardVel > 30 then
-    --        m.forwardVel = m.forwardVel + 0.9
-    --        if m.forwardVel >= 40 then
-    --            --smlua_anim_util_set_animation(m.marioObj, "cr_anim_j355_sprint")
-    --            e.sprintCheck = true
-    --        end
-    --    end
-    --    if m.forwardVel < 40 and e.sprintCheck then
-    --        e.sprintCheck = false
-    --        m.marioObj.header.gfx.animInfo.animID = -1
-    --    end
-    --end
     -- GP cancel
     if m.action == ACT_GROUND_POUND and m.input & INPUT_B_PRESSED ~= 0 then
         m.faceAngle.y = m.intendedYaw
@@ -670,8 +595,9 @@ local function j355_update(m)
     end
     -- GP jump
     if m.action == ACT_GROUND_POUND_LAND and m.input & INPUT_A_PRESSED ~= 0 then
+        local addVelY = (e.spinInput == 0 and 20 or 5)
         set_mario_action(m, ACT_JUMP, 1)
-        m.vel.y = m.vel.y + 20
+        m.vel.y = m.vel.y + addVelY
     end
     if s.water > 0 and m.action == ACT_DOUBLE_JUMP and m.vel.y > 30 and m.actionArg == 1 then
         set_mario_particle_flags(m, PARTICLE_MIST_CIRCLE, 0)
@@ -692,10 +618,6 @@ local function j355_update(m)
     -- dont get stuck in water
     if m.flags & MARIO_METAL_CAP ~= 0 and m.pos.y < (m.waterLevel + 1) then
         m.pos.y = m.waterLevel + 4
-    end
-    -- backflip mobility
-    if m.action == ACT_BACKFLIP and m.forwardVel > -25 and m.forwardVel < 0 then
-        m.forwardVel = m.forwardVel * 1.1
     end
 
     -- fludd physics
@@ -802,6 +724,41 @@ local function j355_update(m)
     if m.input & INPUT_B_PRESSED ~= 0 and (spinActions[m.action] or (m.action == ACT_SPRINGFLIP and m.actionTimer > 20)) then
         set_mario_action(m, ACT_GALAXY_SPIN, 0)
     end
+    -- spinjump
+    if m.action == ACT_SIDE_FLIP and m.actionArg == 73 then
+        if m.marioObj.header.gfx.animInfo.animFrame == -1 then
+            play_character_sound(m, CHAR_SOUND_YAHOO_WAHA_YIPPEE)
+        end
+        if m.actionTimer <= 12 then
+            for i=0, m.actionTimer do
+                if m.actionTimer % 3 == 0 then
+                    play_sound_with_freq_scale(SOUND_ACTION_TWIRL, m.marioObj.header.gfx.cameraToObject, 1 + (i/12)*1.5)
+                end
+            end
+        end
+
+        e.gfxY = e.gfxY + 0x4000
+        m.vel.y = m.vel.y + 1
+        m.marioObj.header.gfx.angle.y = m.faceAngle.y + e.gfxY
+
+        m.actionTimer = m.actionTimer + 1
+    end
+end
+
+local function j355_interact(m, o, type)
+    if (obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 or obj_has_behavior_id(o, id_bhvFlyGuy) ~= 0) and m.playerIndex == 0 then
+        local oTwirlEnemy = nil
+        if obj_has_behavior_id(o, id_bhvSpindrift) ~= 0 then
+            oTwirlEnemy = obj_get_nearest_object_with_behavior_id(m.marioObj, id_bhvSpindrift)
+        elseif obj_has_behavior_id(o, id_bhvFlyGuy) ~= 0 then
+            oTwirlEnemy = obj_get_nearest_object_with_behavior_id(m.marioObj, id_bhvFlyGuy)
+        end
+        if oTwirlEnemy ~= nil and oTwirlEnemy.oInteractStatus & INT_STATUS_WAS_ATTACKED ~= 0 and m.action ~= ACT_TWIRLING and m.flags & MARIO_METAL_CAP == 0 then
+            spawn_non_sync_object(id_bhvMetalCap, E_MODEL_MARIOS_METAL_CAP, o.oPosX, o.oPosY + 100, o.oPosZ, function(cap)
+                cap.oVelY = 20
+            end)
+        end
+    end
 end
 
 local function j355_level_init()
@@ -839,7 +796,7 @@ end
 ---------
 
 local function j355_hud()
-    if gNetworkPlayers[0].currActNum == 99 or gMarioStates[0].action == ACT_INTRO_CUTSCENE or hud_is_hidden() or obj_get_first_with_behavior_id(id_bhvActSelector) then return end
+    if gNetworkPlayers[0].currActNum == 99 or gMarioStates[0].action == ACT_INTRO_CUTSCENE or obj_get_first_with_behavior_id(id_bhvActSelector) then return end -- or hud_is_hidden() then return end
 
     local m = gMarioStates[0]
     local e = gJ355States[0]
@@ -871,6 +828,7 @@ end
 _G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_MARIO_UPDATE, j355_update)
 _G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_ON_SET_MARIO_ACTION, j355_set_action)
 _G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_BEFORE_PHYS_STEP, j355_before_phys_step)
+_G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_ON_INTERACT, j355_interact)
 _G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_ON_LEVEL_INIT, j355_level_init)
 _G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_ON_PLAY_SOUND, j355_sound)
 _G.charSelect.character_hook_moveset(CT_CR_J355, HOOK_ALLOW_HAZARD_SURFACE, j355_hazard)

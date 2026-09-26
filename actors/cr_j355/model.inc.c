@@ -6289,7 +6289,6 @@ Gfx mat_cr_j355_Evil_Logo__EMBLEM__layer2[] = {
 
 Gfx mat_revert_cr_j355_Evil_Logo__EMBLEM__layer2[] = {
 	gsDPPipeSync(),
-	gsDPSetRenderMode(G_RM_AA_ZB_OPA_DECAL, G_RM_AA_ZB_OPA_DECAL2),
 	gsSPEndDisplayList(),
 };
 

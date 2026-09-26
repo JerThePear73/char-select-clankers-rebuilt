@@ -10,10 +10,10 @@ if not _G.charSelectExists then
 end
 
 -- Models --
-local E_MODEL_CR_DAVY = smlua_model_util_get_id('cr_davy_geo')
-local E_MODEL_CR_J355 = smlua_model_util_get_id('cr_j355_geo')
+E_MODEL_CR_DAVY = smlua_model_util_get_id('cr_davy_geo')
+E_MODEL_CR_J355 = smlua_model_util_get_id('cr_j355_geo')
 
-init_physbone_chain(E_MODEL_CR_DAVY, 0, 0.2, 1, 90, 90)
+init_physbone_chain(E_MODEL_CR_DAVY, 0, 0.2, 0.5, 90, 0) -- setting last param to 0 fixes jitter
 
 -- Credits --
 _G.charSelect.credit_add(TEXT_MOD_NAME, "JerThePear", "Creator")
@@ -330,6 +330,16 @@ local ANIMTABLE_CR_DAVY = {
                                                             end
                                                         end,
 }
+local HANDTABLE_CR_DAVY = {
+   [CHAR_ANIM_DOUBLE_JUMP_RISE]         = MARIO_HAND_OPEN,
+   [CHAR_ANIM_DOUBLE_JUMP_FALL]         = MARIO_HAND_OPEN,
+   [CHAR_ANIM_BACKFLIP]                 = MARIO_HAND_OPEN,
+   [CHAR_ANIM_SLIDE_KICK]               = MARIO_HAND_RIGHT_OPEN,
+   [CHAR_ANIM_THROW_LIGHT_OBJECT]       = MARIO_HAND_RIGHT_OPEN,
+   [CHAR_ANIM_GROUND_THROW]             = function(m, frame) if frame < 10 then return MARIO_HAND_RIGHT_OPEN end end,
+   [CHAR_ANIM_SLIDEJUMP]                = function(m, frame) if frame > 10 then return MARIO_HAND_RIGHT_OPEN end end,
+   [CHAR_ANIM_TRIPLE_JUMP_LAND]         = function(m, frame) if frame < 20 then return MARIO_HAND_OPEN end end,
+}
 local EYETABLE_CR_DAVY = {
     [_G.charSelect.CS_ANIM_MENU] = MARIO_EYES_LOOK_RIGHT,
 }
@@ -344,7 +354,13 @@ local ANIMTABLE_CR_J355 = {
                                                 set_mario_particle_flags(m, PARTICLE_DUST, 0)
                                             end
                                         end,
-   [CHAR_ANIM_SLIDEFLIP]                = "cr_anim_j355_slideflip",
+   [CHAR_ANIM_SLIDEFLIP]                = function(m, frame)
+                                            if m.actionArg == 73 then
+                                                return "cr_anim_j355_ice_jump_2"
+                                            else
+                                                return "cr_anim_j355_slideflip"
+                                            end
+                                        end,
    [CHAR_ANIM_TRIPLE_JUMP_LAND]         = "cr_anim_j355_tada",
    [CHAR_ANIM_SINGLE_JUMP]              = function(m, frame)
                                             if frame > 1 and frame < 5 and m.actionArg == 0 then
@@ -360,16 +376,6 @@ local ANIMTABLE_CR_J355 = {
                                                 m.marioBodyState.punchState = (2 << 6) | 6
                                             end
                                         end,
-}
-local HANDTABLE_CR_DAVY = {
-   [CHAR_ANIM_DOUBLE_JUMP_RISE]         = MARIO_HAND_OPEN,
-   [CHAR_ANIM_DOUBLE_JUMP_FALL]         = MARIO_HAND_OPEN,
-   [CHAR_ANIM_BACKFLIP]                 = MARIO_HAND_OPEN,
-   [CHAR_ANIM_SLIDE_KICK]               = MARIO_HAND_RIGHT_OPEN,
-   [CHAR_ANIM_THROW_LIGHT_OBJECT]       = MARIO_HAND_RIGHT_OPEN,
-   [CHAR_ANIM_GROUND_THROW]             = function(m, frame) if frame < 10 then return MARIO_HAND_RIGHT_OPEN end end,
-   [CHAR_ANIM_SLIDEJUMP]                = function(m, frame) if frame > 10 then return MARIO_HAND_RIGHT_OPEN end end,
-   [CHAR_ANIM_TRIPLE_JUMP_LAND]         = function(m, frame) if frame < 20 then return MARIO_HAND_OPEN end end,
 }
 
 local EYETABLE_CR_J355 = {
