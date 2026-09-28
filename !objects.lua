@@ -1,17 +1,40 @@
 local E_MODEL_CR_FIREBALL = smlua_model_util_get_id('cr_fireball_geo')
+local E_MODEL_CR_ICEBALL = smlua_model_util_get_id('cr_iceball_geo')
+local E_MODEL_CR_ICECUBE = smlua_model_util_get_id('cr_icecube_geo')
+E_MODEL_CR_SNOWFLAKE = smlua_model_util_get_id('cr_particle_snowflake_geo')
 
-local fireballLifetime = 100
 local fireballHitSound = SOUND_ACTION_HIT
+local fireballLifetime = 100
+local iceballLifetime = 60
+
+local spawnFlowerBhvs = {
+    id_bhvSpindrift,
+    id_bhvFlyGuy,
+}
+
+local function checkSpawnFlowerBhvs(o)
+    for i = 1, #spawnFlowerBhvs do
+        if obj_has_behavior_id(o, spawnFlowerBhvs[i]) ~= 0 then
+            return true
+        end
+    end
+    return false
+end
 
 ---@param fireball Object -- fireball obj
 ---@param target Object -- the obj fireball hit
-local function fireHitGeneric(fireball, target)
+local function fire_hit_generic(fireball, target)
     target.oInteractStatus = target.oInteractStatus | ATTACK_FAST_ATTACK | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED | INT_STATUS_TOUCHED_BOB_OMB-- | ATTACK_FROM_ABOVE
+    if checkSpawnFlowerBhvs(target) then
+        spawn_non_sync_object(id_bhvMetalCap, E_MODEL_MARIOS_METAL_CAP, target.oPosX, target.oPosY, target.oPosZ, function(cap)
+            cap.oVelY = 30
+        end)
+    end
     spawn_mist_particles_with_sound(fireballHitSound)
     obj_mark_for_deletion(fireball)
 end
 
-local function fireHitSnowman(fireball, target)
+local function fire_hit_snowman(fireball, target)
     for i=0, 2 do
         spawn_non_sync_object(id_bhvSingleCoinGetsSpawned, E_MODEL_YELLOW_COIN, target.oPosX, target.oPosY, target.oPosZ, nil)
     end
@@ -35,7 +58,7 @@ local function fireHitSnowman(fireball, target)
     obj_mark_for_deletion(fireball)
 end
 
-local function fireHitHeaveHo(fireball, target)
+local function fire_hit_heaveho(fireball, target)
     spawn_non_sync_object(id_bhvMrIBlueCoin, E_MODEL_BLUE_COIN, target.oPosX, target.oPosY, target.oPosZ, nil)
     play_sound(SOUND_GENERAL_BREAK_BOX, target.header.gfx.cameraToObject)
     spawn_triangle_break_particles(30, 138, 3.0, 4)
@@ -44,7 +67,7 @@ local function fireHitHeaveHo(fireball, target)
     obj_mark_for_deletion(fireball)
 end
 
-local function fireHitEyeball(fireball, target)
+local function fire_hit_eyeball(fireball, target)
     spawn_non_sync_object(id_bhvMrIBlueCoin, E_MODEL_BLUE_COIN, target.oPosX, target.oPosY, target.oPosZ, nil)
     play_sound(SOUND_OBJ_MRI_DEATH, target.header.gfx.cameraToObject)
     obj_mark_for_deletion(target)
@@ -52,7 +75,7 @@ local function fireHitEyeball(fireball, target)
     obj_mark_for_deletion(fireball)
 end
 
-local function fireHitBully(fireball, target)
+local function fire_hit_bully(fireball, target)
     target.oInteractStatus = target.oInteractStatus | ATTACK_FAST_ATTACK | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED
     target.oMoveAngleYaw = fireball.oMoveAngleYaw
     target.oForwardVel = 30
@@ -60,7 +83,7 @@ local function fireHitBully(fireball, target)
     obj_mark_for_deletion(fireball)
 end
 
-local function fireHitBox(fireball, target)
+local function fire_hit_box(fireball, target)
     for i=0, 2 do
         spawn_non_sync_object(id_bhvSingleCoinGetsSpawned, E_MODEL_YELLOW_COIN, target.oPosX, target.oPosY, target.oPosZ, function(coin)
         coin.oMoveAngleYaw = math.random(0, 0x10000)
@@ -72,16 +95,7 @@ local function fireHitBox(fireball, target)
     obj_mark_for_deletion(fireball)
 end
 
-local function fireHitTwirlEnemy(fireball, target)
-    target.oInteractStatus = target.oInteractStatus | ATTACK_FAST_ATTACK | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED
-        spawn_non_sync_object(id_bhvMetalCap, E_MODEL_MARIOS_METAL_CAP, target.oPosX, target.oPosY + 100, target.oPosZ, function(cap)
-            cap.oVelY = 20
-        end)
-    spawn_mist_particles_with_sound(fireballHitSound)
-    obj_mark_for_deletion(fireball)
-end
-
-local function fireHitBowser(fireball, target)
+local function fire_hit_bowser(fireball, target)
     local oBowser = target.parentObj
     if oBowser.oAction ~= 19 and oBowser.oAction ~= 4 and oBowser.oAction ~= 12 then
         oBowser.oMoveFlags = 0
@@ -98,50 +112,103 @@ local function fireHitBowser(fireball, target)
     obj_mark_for_deletion(fireball)
 end
 
-local fireHitInteracts = {
-    [id_bhvGoomba]              = fireHitGeneric,
-    [id_bhvBobomb]              = fireHitGeneric,
-    [id_bhvKoopa]               = fireHitGeneric,
-    [id_bhvMontyMole]           = fireHitGeneric,
-    [id_bhvBoo]                 = fireHitGeneric,
-    [id_bhvFlyingBookend]       = fireHitGeneric,
-    [id_bhvSkeeter]             = fireHitGeneric,
-    [id_bhvMoneybag]            = fireHitGeneric,
-    [id_bhvSnufit]              = fireHitGeneric,
-    [id_bhvSwoop]               = fireHitGeneric,
-    [id_bhvFirePiranhaPlant]    = fireHitGeneric,
-    [id_bhvEnemyLakitu]         = fireHitGeneric,
-    [id_bhvPokey]               = fireHitGeneric,
-    [id_bhvPokeyBodyPart]       = fireHitGeneric,
-    [id_bhvSkeeter]             = fireHitGeneric,
-    [id_bhvEyerokHand]          = fireHitGeneric,
-    [id_bhvScuttlebug]          = fireHitGeneric,
-    [id_bhvBreakableBox]        = fireHitGeneric,
+local function fire_hit_stop(fireball, target)
+    spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH)
+    obj_mark_for_deletion(fireball)
+end
+local function fire_hit_none(fireball, target)
+    return
+end
 
-    [id_bhvSmallBully]          = fireHitBully,
-    [id_bhvBigBully]            = fireHitBully,
-    [id_bhvBigBullyWithMinions] = fireHitBully,
-    [id_bhvSmallChillBully]     = fireHitBully,
-    [id_bhvBigChillBully]       = fireHitBully,
-    
-    [id_bhvSpindrift]           = fireHitTwirlEnemy,
-    [id_bhvFlyGuy]              = fireHitTwirlEnemy,
+---@param iceball Object -- iceball obj
+---@param target Object -- the obj iceball hit
+local function ice_hit_genertic_freeze(iceball, target)
+    target.oInteractStatus = target.oInteractStatus | ATTACK_FAST_ATTACK | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED
+    obj_mark_for_deletion(iceball)
+    spawn_sync_object(id_bhvIceCube, E_MODEL_CR_ICECUBE, target.oPosX, target.oPosY, target.oPosZ, function(cube)
+        cube.oMoveAngleYaw = target.oMoveAngleYaw
+        if checkSpawnFlowerBhvs(target) then
+            spawn_non_sync_object(id_bhvMetalCap, E_MODEL_MARIOS_METAL_CAP, target.oPosX, target.oPosY, target.oPosZ, function(cap)
+                cube.parentObj = cap
+            end)
+        end
+    end)
+end
+local function ice_hit_goomba_freeze(iceball, target)
+    target.oInteractStatus = target.oInteractStatus | ATTACK_FAST_ATTACK | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED
+    obj_mark_for_deletion(iceball)
+    spawn_sync_object(id_bhvIceCube, E_MODEL_CR_ICECUBE, target.oPosX, target.oPosY, target.oPosZ, function(cube)
+        cube.oMoveAngleYaw = target.oMoveAngleYaw
+        obj_scale(cube, target.header.gfx.scale.y*0.5)
+    end)
 
-    [id_bhvMrBlizzard]          = fireHitSnowman,
+    spawn_non_sync_object(id_bhvSingleCoinGetsSpawned, E_MODEL_YELLOW_COIN, target.oPosX, target.oPosY, target.oPosZ, nil)
+    obj_mark_for_deletion(target)
+end
+local function ice_hit_bobomb_freeze(iceball, target)
+    obj_mark_for_deletion(iceball)
+    if target.oBehParams ~= 0x100 then -- bobomb has coin
+        obj_spawn_yellow_coins(target, 1)
+    end
+    spawn_sync_object(id_bhvIceCube, E_MODEL_CR_ICECUBE, target.oPosX, target.oPosY, target.oPosZ, function(cube)
+        cube.oMoveAngleYaw = target.oMoveAngleYaw
+    end)
+    obj_mark_for_deletion(target)
+end
+local function ice_hit_bluecoin_freeze(iceball, target)
+    target.oInteractStatus = target.oInteractStatus | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED
+    obj_mark_for_deletion(iceball)
+    spawn_sync_object(id_bhvIceCube, E_MODEL_CR_ICECUBE, target.oPosX, target.oPosY, target.oPosZ, function(cube)
+        cube.oMoveAngleYaw = target.oMoveAngleYaw
+    end)
 
-    [id_bhvHeaveHo]             = fireHitHeaveHo,
+    spawn_non_sync_object(id_bhvMrIBlueCoin, E_MODEL_BLUE_COIN, target.oPosX, target.oPosY, target.oPosZ, nil)
+    obj_mark_for_deletion(target)
+end
 
-    [id_bhvMrI]                 = fireHitEyeball,
-
-    [id_bhvBreakableBoxSmall]   = fireHitBox,
-
-    [id_bhvHauntedChair]        = fireHitGeneric,
-
-    [id_bhvBowserBodyAnchor]    = fireHitBowser,
+local projectileHitInteracts = {
+    [id_bhvGoomba]              = {fire = fire_hit_generic,     ice = ice_hit_goomba_freeze},
+    [id_bhvBobomb]              = {fire = fire_hit_generic,     ice = ice_hit_bobomb_freeze},
+    [id_bhvKoopa]               = {fire = fire_hit_generic,     ice = ice_hit_bluecoin_freeze},
+    [id_bhvMontyMole]           = {fire = fire_hit_generic,     ice = fire_hit_generic},
+    [id_bhvBoo]                 = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvGhostHuntBoo]        = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvMerryGoRoundBoo]     = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvGhostHuntBigBoo]     = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvBalconyBigBoo]       = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvMerryGoRoundBigBoo]  = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvFlyingBookend]       = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvSkeeter]             = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvMoneybag]            = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvSnufit]              = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvSwoop]               = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvFirePiranhaPlant]    = {fire = fire_hit_generic,     ice = fire_hit_generic},
+    [id_bhvEnemyLakitu]         = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvPokey]               = {fire = fire_hit_generic,     ice = fire_hit_generic},
+    [id_bhvPokeyBodyPart]       = {fire = fire_hit_generic,     ice = fire_hit_generic},
+    [id_bhvSkeeter]             = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvEyerokHand]          = {fire = fire_hit_generic,     ice = fire_hit_generic},
+    [id_bhvScuttlebug]          = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvSmallBully]          = {fire = fire_hit_bully,       ice = fire_hit_stop},
+    [id_bhvBigBully]            = {fire = fire_hit_bully,       ice = fire_hit_stop},
+    [id_bhvBigBullyWithMinions] = {fire = fire_hit_bully,       ice = fire_hit_stop},
+    [id_bhvSmallChillBully]     = {fire = fire_hit_bully,       ice = fire_hit_stop},
+    [id_bhvBigChillBully]       = {fire = fire_hit_bully,       ice = fire_hit_stop},
+    [id_bhvSpindrift]           = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvFlyGuy]              = {fire = fire_hit_generic,     ice = ice_hit_genertic_freeze},
+    [id_bhvMrBlizzard]          = {fire = fire_hit_snowman,     ice = fire_hit_stop},
+    [id_bhvHeaveHo]             = {fire = fire_hit_heaveho,     ice = ice_hit_bluecoin_freeze},
+    [id_bhvMrI]                 = {fire = fire_hit_eyeball,     ice = fire_hit_stop},
+    [id_bhvBreakableBox]        = {fire = fire_hit_generic,     ice = fire_hit_none},
+    [id_bhvBreakableBoxSmall]   = {fire = fire_hit_box,         ice = fire_hit_none},
+    [id_bhvHauntedChair]        = {fire = fire_hit_generic,     ice = ice_hit_bluecoin_freeze},
+    [id_bhvBowserBodyAnchor]    = {fire = fire_hit_bowser,      ice = fire_hit_stop},
+    [id_bhvChuckya]             = {fire = fire_hit_stop,        ice = fire_hit_stop},
 }
 
 ---@param o Object
-local function bhv_fireball_init(o)
+local function bhv_projectile_init(o)
+    local hitboxSize = 300
     o.oFlags = OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
     o.activeFlags = o.activeFlags | ACTIVE_FLAG_UNK9
     o.oGraphYOffset         = 40
@@ -151,71 +218,137 @@ local function bhv_fireball_init(o)
     o.oFriction             = 1
     o.oBuoyancy             = -2
     o.oWallHitboxRadius     = 10
-    o.hitboxDownOffset      = 0
-    o.hitboxRadius          = 120
-    o.hitboxHeight          = 300
-    o.hurtboxRadius         = 120
-    o.hurtboxHeight         = 300
+    o.hitboxDownOffset      = hitboxSize/2
+    o.hitboxRadius          = hitboxSize/4
+    o.hitboxHeight          = hitboxSize
+    o.hurtboxRadius         = hitboxSize/4
+    o.hurtboxHeight         = hitboxSize
     o.oDamageOrCoinValue    = 0
     o.oForwardVel           = 65
     o.oTimer                = 0
-    --obj.oInteractType       = INTERACT_FLAME
     cur_obj_become_tangible()
-
-    --network thing
-    --network_init_object(o, true, {'oTimer'})
-
-    -- object specific fields
-    --o.oTimer = fireballLifetime
 end
-
 ---@param o Object
 local function bhv_fireball_loop(o)
+    local isIceball = obj_get_model_id_extended(o) == E_MODEL_CR_ICEBALL and true or false
+    local projectileLifetime = isIceball and iceballLifetime or fireballLifetime
+    local particleType = isIceball and E_MODEL_CR_SNOWFLAKE or E_MODEL_RED_FLAME
+
     local step = object_step_without_floor_orient()
     if step & (OBJ_COL_FLAGS_LANDED) ~= 0 then
         o.oVelY = 30
     end
     local targetDist = 0x20000
-    for key, hit_effect in pairs(fireHitInteracts) do
+    for key, hit_effect in pairs(projectileHitInteracts) do
         local hitObj = cur_obj_nearest_object_with_behavior(get_behavior_from_id(key))
         if hitObj ~= nil then
-            if fireHitInteracts[key] ~= nil then
+            if projectileHitInteracts[key] ~= nil then
                 local dist = dist_between_objects(o, hitObj)
                 if dist < targetDist then
                     targetDist = dist
                 end
                 if obj_check_hitbox_overlap(o, hitObj) then
-                    hit_effect(o, hitObj)
+                    if isIceball then
+                        hit_effect.ice(o, hitObj)
+                    else
+                        hit_effect.fire(o, hitObj)
+                    end
                 end
             end
+        -- else
+        --     spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH)
+        --     obj_mark_for_deletion(o)
         end
     end
     local range = 20
     local offsetX = math.random(-range, range)
     local offsetY = math.random(-range, range) + o.oGraphYOffset/2
     local offsetZ = math.random(-range, range)
-    spawn_non_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, o.oPosX + offsetX, o.oPosY + offsetY, o.oPosZ + offsetZ, function(flame)
-        obj_scale(flame, 1)
+    spawn_non_sync_object(id_bhvCoinSparkles, particleType, o.oPosX + offsetX, o.oPosY + offsetY, o.oPosZ + offsetZ, function(trail)
+        obj_scale(trail, 1)
     end)
     o.oFaceAnglePitch = o.oFaceAnglePitch + 0x1200
     o.oFaceAngleYaw = o.oMoveAngleYaw
     if step & OBJ_COL_FLAG_UNDERWATER ~= 0 then
+        if not isIceball then
         spawn_mist_particles_with_sound(SOUND_GENERAL_FLAME_OUT)
         obj_mark_for_deletion(o)
         return
-    elseif o.oTimer >= fireballLifetime  then
+        else
+            o.oVelY = 30
+            o.oForwardVel = 65
+        end
+    elseif o.oTimer >= projectileLifetime  then
         spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH)
         obj_mark_for_deletion(o)
         return
     end
 end
-id_bhvDavyFireball = hook_behavior(nil, OBJ_LIST_GENACTOR, true, bhv_fireball_init, bhv_fireball_loop, "bhvDavyFireball")
+id_bhvFireOrIceball = hook_behavior(nil, OBJ_LIST_GENACTOR, true, bhv_projectile_init, bhv_fireball_loop, "bhvFireOrIceball")
+
+local function bhv_icecube_init(o)
+    local scaleOffset = o.header.gfx.scale.y * 0.9
+    o.oFlags = OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE
+    --o.activeFlags = o.activeFlags | ACTIVE_FLAG_UNK9
+    o.oGraphYOffset         = 0
+    o.oGravity              = 0
+    o.oBounciness           = 0
+    o.oDragStrength         = 0
+    o.oFriction             = 0
+    o.oBuoyancy             = 0
+    o.oDamageOrCoinValue    = 0
+    o.oTimer                = 0
+    o.collisionData         = gGlobalObjectCollisionData.breakable_box_seg8_collision_08012D70
+    o.oCollisionDistance    = 600
+    o.oMoveAngleRoll        = 0
+    o.oMoveAnglePitch       = 0
+    o.header.gfx.scale.x    = scaleOffset
+    o.header.gfx.scale.y    = scaleOffset
+    o.header.gfx.scale.z    = scaleOffset
+    cur_obj_become_tangible()
+    spawn_mist_particles_with_sound(SOUND_OBJ_BIG_PENGUIN_WALK)
+    spawn_mist_particles_with_sound(SOUND_OBJ_BIG_PENGUIN_WALK)
+end
+local function bhv_icecube_loop(o)
+    local icecubeDurr = iceballLifetime * 3
+    load_object_collision_model()
+
+    if cur_obj_was_attacked_or_ground_pounded() ~= 0 or o.oTimer >= icecubeDurr then
+        play_sound(SOUND_GENERAL_BREAK_BOX, o.header.gfx.cameraToObject)
+        spawn_triangle_break_particles(10, 139, 0.3, 2)
+        if cur_obj_was_attacked_or_ground_pounded() ~= 0 then
+            obj_spawn_yellow_coins(o, 3)
+        end
+        obj_mark_for_deletion(o)
+    end
+    if o.parentObj ~= nil then
+        o.parentObj.oPosX = o.oPosX
+        o.parentObj.oPosY = o.oPosY
+        o.parentObj.oPosZ = o.oPosZ
+        o.parentObj.oVelX = 0
+        o.parentObj.oVelY = 0
+        o.parentObj.oVelZ = 0
+        o.parentObj.oMoveAnglePitch = 0
+        o.parentObj.oMoveAngleYaw = 0
+        o.parentObj.oMoveAngleRoll = 0
+    end
+    if o.oTimer > icecubeDurr - 30 then
+        if o.oTimer % 3 == 0 then
+            cur_obj_hide()
+        else
+            cur_obj_unhide()
+        end
+    end
+end
+id_bhvIceCube = hook_behavior(nil, OBJ_LIST_SURFACE, true, bhv_icecube_init, bhv_icecube_loop, "bhvIceCube")
 
 ---@param m MarioState
-function spawn_fireball(m)
+function spawn_fire_or_ice_ball(m, type)
+    local model = type == 0 and E_MODEL_CR_FIREBALL or E_MODEL_CR_ICEBALL
+    local sound = type == 0 and SOUND_OBJ_FLAME_BLOWN or SOUND_OBJ_SNOW_SAND2
     if m.playerIndex ~= 0 then return end
-    play_sound(SOUND_OBJ_FLAME_BLOWN, m.marioObj.header.gfx.cameraToObject)
-    spawn_sync_object(id_bhvDavyFireball, E_MODEL_CR_FIREBALL, m.pos.x, m.pos.y + 100, m.pos.z, function(o)
+    play_sound(sound, m.marioObj.header.gfx.cameraToObject)
+    spawn_sync_object(id_bhvFireOrIceball, model, m.pos.x, m.pos.y + 100, m.pos.z, function(o)
         o.oMoveAngleYaw = m.faceAngle.y
         o.oVelY = 15
     end)

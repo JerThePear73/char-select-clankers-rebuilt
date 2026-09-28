@@ -46,14 +46,14 @@ const GeoLayout cr_davy_Right_Hand_Wing_Cap[] = {
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma_Left_Hand_Open[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Ghost___Left_Hand_Open[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Left_Hand_Open_Switch_Option_Left_Hand_Open_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Open[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Open[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Open_Switch_Option_Right_Hand_Open_mesh_layer_5),
@@ -63,21 +63,21 @@ const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Open[] = {
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Peace[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Peace[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Peace_Switch_Option_Right_Hand_Peace_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Cap[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Cap[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Cap_Switch_Option_Right_Hand_Cap_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Wing_Cap[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Wing_Cap[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Wing_Cap_Swtich_Option_Right_Hand_Wing_Cap_mesh_layer_5),
@@ -142,7 +142,7 @@ const GeoLayout cr_davy_B_LoD_Switch_opt0_Cap_State_Switch_opt1_Cap_State_Switch
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Ghost_Davy[] = {
+const GeoLayout cr_davy_Ghost___Davy[] = {
 	GEO_TRANSLATE_ROTATE(LAYER_OPAQUE, 0, 3, 0, 0, 0, 0),
 	GEO_OPEN_NODE(),
 		GEO_SHADOW(1, 26, 100),
@@ -228,7 +228,7 @@ const GeoLayout cr_davy_Ghost_Davy[] = {
 																GEO_CLOSE_NODE(),
 															GEO_CLOSE_NODE(),
 														GEO_CLOSE_NODE(),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma_Left_Hand_Open),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Ghost___Left_Hand_Open),
 													GEO_CLOSE_NODE(),
 												GEO_CLOSE_NODE(),
 											GEO_CLOSE_NODE(),
@@ -254,10 +254,10 @@ const GeoLayout cr_davy_Ghost_Davy[] = {
 																GEO_HELD_OBJECT(0, 0, 0, 0, geo_switch_mario_hand_grab_pos),
 															GEO_CLOSE_NODE(),
 														GEO_CLOSE_NODE(),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Open),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Peace),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Cap),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma_Right_Hand_Wing_Cap),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Open),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Peace),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Cap),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Ghost___Right_Hand_Wing_Cap),
 													GEO_CLOSE_NODE(),
 												GEO_CLOSE_NODE(),
 											GEO_CLOSE_NODE(),
@@ -300,14 +300,14 @@ const GeoLayout cr_davy_Ghost_Davy[] = {
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Left_Hand_Open_001[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma___Left_Hand_Open[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_OPAQUE, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Left_Hand_Open_Switch_Option_Left_Hand_Open_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Right_Hand_Open_001[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Open[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_OPAQUE, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Open_Switch_Option_Right_Hand_Open_mesh_layer_1),
@@ -317,21 +317,21 @@ const GeoLayout cr_davy_Magma_Davy_Switch_Option_Right_Hand_Open_001[] = {
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Right_Hand_Peace_001[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Peace[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_OPAQUE, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Peace_Switch_Option_Right_Hand_Peace_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Right_Hand_Cap_001[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Cap[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_OPAQUE, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Cap_Switch_Option_Right_Hand_Cap_mesh_layer_1),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy_Switch_Option_Right_Hand_Wing_Cap_001[] = {
+const GeoLayout cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Wing_Cap[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_OPAQUE, 120, 0, 0, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Wing_Cap_Swtich_Option_Right_Hand_Wing_Cap_mesh_layer_1),
@@ -396,7 +396,7 @@ const GeoLayout cr_davy_B_LoD_Switch_opt0_Cap_State_Switch_opt2_Cap_State_Switch
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Davy[] = {
+const GeoLayout cr_davy_Magma___Davy[] = {
 	GEO_TRANSLATE_ROTATE(LAYER_OPAQUE, 0, 3, 0, 0, 0, 0),
 	GEO_OPEN_NODE(),
 		GEO_SWITCH_CASE(0, geo_switch_mario_cap_effect),
@@ -482,7 +482,7 @@ const GeoLayout cr_davy_Magma_Davy[] = {
 																GEO_CLOSE_NODE(),
 															GEO_CLOSE_NODE(),
 														GEO_CLOSE_NODE(),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Left_Hand_Open_001),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma___Left_Hand_Open),
 													GEO_CLOSE_NODE(),
 												GEO_CLOSE_NODE(),
 											GEO_CLOSE_NODE(),
@@ -508,10 +508,10 @@ const GeoLayout cr_davy_Magma_Davy[] = {
 																GEO_HELD_OBJECT(0, 0, 0, 0, geo_switch_mario_hand_grab_pos),
 															GEO_CLOSE_NODE(),
 														GEO_CLOSE_NODE(),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Open_001),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Peace_001),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Cap_001),
-														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Right_Hand_Wing_Cap_001),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Open),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Peace),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Cap),
+														GEO_BRANCH(1, cr_davy_Magma_Davy_Switch_Option_Magma___Right_Hand_Wing_Cap),
 													GEO_CLOSE_NODE(),
 												GEO_CLOSE_NODE(),
 											GEO_CLOSE_NODE(),
@@ -554,14 +554,14 @@ const GeoLayout cr_davy_Magma_Davy[] = {
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Left_Hand_Open_001[] = {
+const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Left_Hand_Open[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Ghost_Davy_Switch_Option_Left_Hand_Open_Switch_Option_Left_Hand_Open_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Open_001[] = {
+const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Open[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Ghost_Davy_Switch_Option_Right_Hand_Open_Switch_Option_Right_Hand_Open_mesh_layer_5),
@@ -571,21 +571,21 @@ const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Open_001
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Peace_001[] = {
+const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Peace[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Ghost_Davy_Switch_Option_Right_Hand_Peace_Switch_Option_Right_Hand_Peace_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Cap_001[] = {
+const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Cap[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Ghost_Davy_Switch_Option_Right_Hand_Cap_Switch_Option_Right_Hand_Cap_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Wing_Cap_001[] = {
+const GeoLayout cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Wing_Cap[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_ANIMATED_PART(LAYER_TRANSPARENT, 120, 0, 0, cr_davy_Magma_Ghost_Davy_Switch_Option_Right_Hand_Wing_Cap_Swtich_Option_Right_Hand_Wing_Cap_mesh_layer_5),
@@ -650,7 +650,7 @@ const GeoLayout cr_davy_B_LoD_Switch_opt0_Cap_State_Switch_opt3_Cap_State_Switch
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout cr_davy_Magma_Ghost_Davy[] = {
+const GeoLayout cr_davy_Magma_Ghost___Davy[] = {
 	GEO_TRANSLATE_ROTATE(LAYER_OPAQUE, 0, 3, 0, 0, 0, 0),
 	GEO_OPEN_NODE(),
 		GEO_SHADOW(1, 26, 100),
@@ -736,7 +736,7 @@ const GeoLayout cr_davy_Magma_Ghost_Davy[] = {
 																GEO_CLOSE_NODE(),
 															GEO_CLOSE_NODE(),
 														GEO_CLOSE_NODE(),
-														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Left_Hand_Open_001),
+														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Left_Hand_Open),
 													GEO_CLOSE_NODE(),
 												GEO_CLOSE_NODE(),
 											GEO_CLOSE_NODE(),
@@ -762,10 +762,10 @@ const GeoLayout cr_davy_Magma_Ghost_Davy[] = {
 																GEO_HELD_OBJECT(0, 0, 0, 0, geo_switch_mario_hand_grab_pos),
 															GEO_CLOSE_NODE(),
 														GEO_CLOSE_NODE(),
-														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Open_001),
-														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Peace_001),
-														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Cap_001),
-														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Right_Hand_Wing_Cap_001),
+														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Open),
+														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Peace),
+														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Cap),
+														GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy_Switch_Option_Magma_Ghost___Right_Hand_Wing_Cap),
 													GEO_CLOSE_NODE(),
 												GEO_CLOSE_NODE(),
 											GEO_CLOSE_NODE(),
@@ -1035,9 +1035,9 @@ const GeoLayout cr_davy_geo[] = {
 								GEO_CLOSE_NODE(),
 							GEO_CLOSE_NODE(),
 						GEO_CLOSE_NODE(),
-						GEO_BRANCH(1, cr_davy_Ghost_Davy),
-						GEO_BRANCH(1, cr_davy_Magma_Davy),
-						GEO_BRANCH(1, cr_davy_Magma_Ghost_Davy),
+						GEO_BRANCH(1, cr_davy_Ghost___Davy),
+						GEO_BRANCH(1, cr_davy_Magma___Davy),
+						GEO_BRANCH(1, cr_davy_Magma_Ghost___Davy),
 					GEO_CLOSE_NODE(),
 				GEO_CLOSE_NODE(),
 			GEO_CLOSE_NODE(),

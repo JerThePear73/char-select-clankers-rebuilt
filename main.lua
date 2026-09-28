@@ -13,6 +13,15 @@ end
 E_MODEL_CR_DAVY = smlua_model_util_get_id('cr_davy_geo')
 E_MODEL_CR_J355 = smlua_model_util_get_id('cr_j355_geo')
 
+local E_MODEL_CR_CAP_DAVY_NORMAL        = smlua_model_util_get_id("cr_davy_cap_scarf_geo")
+local E_MODEL_CR_CAP_DAVY_WING          = smlua_model_util_get_id("cr_davy_cap_red_star_geo")
+local E_MODEL_CR_CAP_DAVY_METAL         = smlua_model_util_get_id("cr_davy_cap_fire_flower_geo")
+local E_MODEL_CR_CAP_DAVY_METAL_WING    = smlua_model_util_get_id("cr_davy_cap_fire_star_geo")
+local E_MODEL_CR_CAP_J355_NORMAL        = smlua_model_util_get_id("cr_j355_cap_normal_geo")
+local E_MODEL_CR_CAP_J355_WING          = smlua_model_util_get_id("cr_j355_cap_wing_geo")
+local E_MODEL_CR_CAP_J355_METAL         = smlua_model_util_get_id("cr_j355_cap_ice_flower_geo")
+local E_MODEL_CR_CAP_J355_METAL_WING    = smlua_model_util_get_id("cr_j355_cap_ice_wing_geo")
+
 init_physbone_chain(E_MODEL_CR_DAVY, 0, 0.2, 0.5, 90, 0) -- setting last param to 0 fixes jitter
 
 -- Credits --
@@ -285,10 +294,16 @@ local PALETTES_CR_J355 = {
 }
 
 local CAP_CR_DAVY = {
-   normal       = smlua_model_util_get_id("cr_davy_cap_scarf_geo"),
-   wing         = smlua_model_util_get_id("cr_davy_cap_red_star_geo"),
-   metal        = smlua_model_util_get_id("cr_davy_cap_fire_flower_geo"),
-   metalWing    = smlua_model_util_get_id("cr_davy_cap_fire_star_geo"),
+   normal       = E_MODEL_CR_CAP_DAVY_NORMAL,
+   wing         = E_MODEL_CR_CAP_DAVY_WING,
+   metal        = E_MODEL_CR_CAP_DAVY_METAL,
+   metalWing    = E_MODEL_CR_CAP_DAVY_METAL_WING,
+}
+local CAP_CR_J355 = {
+   normal       = E_MODEL_CR_CAP_J355_NORMAL,
+   wing         = E_MODEL_CR_CAP_J355_WING,
+   metal        = E_MODEL_CR_CAP_J355_METAL,
+   metalWing    = E_MODEL_CR_CAP_J355_METAL_WING,
 }
 
 local ANIMTABLE_CR_DAVY = {
@@ -377,11 +392,7 @@ local ANIMTABLE_CR_J355 = {
                                             end
                                         end,
 }
-
-local EYETABLE_CR_J355 = {
-    [_G.charSelect.CS_ANIM_MENU] = MARIO_EYES_OPEN,
-}
-local HANDTABLE_CR_JESS = {
+local HANDTABLE_CR_J355 = {
    [CHAR_ANIM_DOUBLE_JUMP_RISE]         = MARIO_HAND_OPEN,
    [CHAR_ANIM_DOUBLE_JUMP_FALL]         = MARIO_HAND_OPEN,
    [CHAR_ANIM_BACKFLIP]                 = MARIO_HAND_OPEN,
@@ -393,6 +404,9 @@ local HANDTABLE_CR_JESS = {
    [CHAR_ANIM_TRIPLE_JUMP_LAND]         = function(m, frame) if frame < 20 then return MARIO_HAND_OPEN end end,
    [CHAR_ANIM_TRIPLE_JUMP_GROUND_POUND] = function(m, frame) if frame < 7 then return MARIO_HAND_OPEN end end,
    [CHAR_ANIM_START_GROUND_POUND]       = function(m, frame) if frame < 7 then return MARIO_HAND_OPEN end end,
+}
+local EYETABLE_CR_J355 = {
+    [_G.charSelect.CS_ANIM_MENU] = MARIO_EYES_OPEN,
 }
 
 if _G.charSelectExists then
@@ -437,8 +451,8 @@ local function on_character_select_load()
         end
     end)
 
-    charSelect.character_add_animations(E_MODEL_CR_J355, ANIMTABLE_CR_J355, EYETABLE_CR_J355, HANDTABLE_CR_JESS)
-    --_G.charSelect.character_add_caps(E_MODEL_CR_J355, CAP_CR_J355)
+    charSelect.character_add_animations(E_MODEL_CR_J355, ANIMTABLE_CR_J355, EYETABLE_CR_J355, HANDTABLE_CR_J355)
+    _G.charSelect.character_add_caps(E_MODEL_CR_J355, CAP_CR_J355)
     charSelect.character_add_voice(E_MODEL_CR_J355, VOICETABLE_CR_J355)
     --_G.charSelect.character_add_graffiti(CT_CR_J355, TEX_ART_CR_J355)
     --_G.charSelect.character_add_menu_instrumental(CT_CR_J355, SOUND_MENU_THEME_CR_J355)

@@ -3,7 +3,10 @@
 const GeoLayout cr_davy_cap_scarf_Cap_Boo_Shroom[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_DISPLAY_LIST(LAYER_OPAQUE, cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1),
+		GEO_SCALE(LAYER_OPAQUE, 121195),
+		GEO_OPEN_NODE(),
+			GEO_DISPLAY_LIST(LAYER_OPAQUE, cr_davy_cap_scarf_Cap_Anim_State_Switch_Option_Boo_Shroom_DL_mesh_layer_1),
+		GEO_CLOSE_NODE(),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

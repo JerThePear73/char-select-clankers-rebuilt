@@ -12,7 +12,7 @@ const GeoLayout cr_davy_cap_red_star_geo[] = {
 	GEO_OPEN_NODE(),
 		GEO_SHADOW(0, 180, 75),
 		GEO_OPEN_NODE(),
-			GEO_SCALE(LAYER_FORCE, 16384),
+			GEO_SCALE(LAYER_FORCE, 30299),
 			GEO_OPEN_NODE(),
 				GEO_ASM(LAYER_OPAQUE + 3, geo_mario_set_player_colors),
 				GEO_ASM(LAYER_OPAQUE_DECAL + 3, geo_mario_set_player_colors),

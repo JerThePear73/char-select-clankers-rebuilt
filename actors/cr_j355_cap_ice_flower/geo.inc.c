@@ -1,0 +1,36 @@
+#include "src/game/envfx_snow.h"
+
+const GeoLayout cr_j355_cap_ice_flower_6_Cap_Anim_State_Switch_opt1[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, cr_j355_cap_ice_flower_Ice_Flower_DL_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, cr_j355_cap_ice_flower_Ice_Flower_DL_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, cr_j355_cap_ice_flower_Ice_Flower_DL_mesh_layer_4),
+	GEO_CLOSE_NODE(),
+	GEO_RETURN(),
+};
+const GeoLayout cr_j355_cap_ice_flower_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_SHADOW(0, 180, 75),
+		GEO_OPEN_NODE(),
+			GEO_SCALE(LAYER_FORCE, 45875),
+			GEO_OPEN_NODE(),
+				GEO_SWITCH_CASE(2, geo_switch_anim_state),
+				GEO_OPEN_NODE(),
+					GEO_NODE_START(),
+					GEO_OPEN_NODE(),
+						GEO_DISPLAY_LIST(LAYER_OPAQUE, cr_j355_cap_ice_flower_Ice_Flower_DL_mesh_layer_1),
+						GEO_DISPLAY_LIST(LAYER_TRANSPARENT, cr_j355_cap_ice_flower_Ice_Flower_DL_mesh_layer_5),
+						GEO_DISPLAY_LIST(LAYER_ALPHA, cr_j355_cap_ice_flower_Ice_Flower_DL_mesh_layer_4),
+					GEO_CLOSE_NODE(),
+					GEO_BRANCH(1, cr_j355_cap_ice_flower_6_Cap_Anim_State_Switch_opt1),
+				GEO_CLOSE_NODE(),
+			GEO_CLOSE_NODE(),
+		GEO_CLOSE_NODE(),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, cr_j355_cap_ice_flower_material_revert_render_settings),
+		GEO_DISPLAY_LIST(LAYER_ALPHA, cr_j355_cap_ice_flower_material_revert_render_settings),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, cr_j355_cap_ice_flower_material_revert_render_settings),
+	GEO_CLOSE_NODE(),
+	GEO_END(),
+};

@@ -297,7 +297,7 @@ local function act_davy_throw_fireball(m)
         e.fireballsThrown = e.fireballsThrown + 1
         play_character_sound(m, CHAR_SOUND_YAH_WAH_HOO)
         set_anim_to_frame(m, 0)
-        spawn_fireball(m)
+        spawn_fire_or_ice_ball(m, 0)
         m.actionState = 1
     end
 
@@ -365,7 +365,7 @@ local function davy_before_set_action(m, act)
         return ACT_AIR_THROW
     end
 
-    -- fire
+    -- fireballs
     if m.flags & MARIO_METAL_CAP ~= 0 and e.fireballsThrown < maxFireballThrows then
         if (act == ACT_DIVE and m.input & INPUT_A_DOWN == 0)
         or act == ACT_MOVE_PUNCHING
@@ -451,11 +451,15 @@ local function davy_update(m)
             local offsetX = math.random(0 - range, range)
             local offsetY = math.random(0 - range, range) + 10
             local offsetZ = math.random(0 - range, range)
-            --if m.playerIndex == 0 then
-                spawn_non_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, headPos.x + offsetX, headPos.y + offsetY, headPos.z + offsetZ, function(o)
-                    obj_scale(o, 3)
-                end)
-            --end
+            if m.playerIndex == 0 then
+                if m.marioBodyState.modelState & MODEL_STATE_METAL ~= 0 then
+                    spawn_sync_object(id_bhvCoinSparkles, E_MODEL_RED_FLAME, headPos.x + offsetX, headPos.y + offsetY, headPos.z + offsetZ, function(o)
+                        obj_scale(o, 3)
+                    end)
+                else
+                    m.marioBodyState.eyeState = MARIO_EYES_DEAD
+                end
+            end
         else
             if get_global_timer() % 10 == 0 then
                 play_sound(SOUND_GENERAL_FLAME_OUT, m.marioObj.header.gfx.cameraToObject)
