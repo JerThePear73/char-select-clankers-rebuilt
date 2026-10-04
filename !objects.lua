@@ -329,8 +329,11 @@ local function bhv_icecube_loop(o)
         o.parentObj.oVelY = 0
         o.parentObj.oVelZ = 0
         o.parentObj.oMoveAnglePitch = 0
-        o.parentObj.oMoveAngleYaw = 0
         o.parentObj.oMoveAngleRoll = 0
+        o.parentObj.oFaceAnglePitch = 0
+        o.parentObj.oFaceAngleRoll = 0
+        o.parentObj.oMoveAngleYaw = o.oMoveAngleYaw
+        o.parentObj.oFaceAngleYaw = o.parentObj.oMoveAngleYaw
     end
     if o.oTimer > icecubeDurr - 30 then
         if o.oTimer % 3 == 0 then
